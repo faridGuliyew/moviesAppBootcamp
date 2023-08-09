@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MoviesAppBootcamp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="intro_text">Aren\'t you a part of \n<b><font color="#FFD50000">NuFlix?</font></b></string>
+    <string name="sign_in">Dont\'t you have an account? <b><font color="#FFD50000">Sign up</font></b></string>
+    <string name="log_in">Already have an account? <b><font color="#FFD50000">Log in</font></b></string>
+</resources>

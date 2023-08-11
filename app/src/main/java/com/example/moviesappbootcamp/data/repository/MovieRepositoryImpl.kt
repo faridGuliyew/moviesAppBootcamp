@@ -4,7 +4,7 @@ import android.util.Log
 import com.example.moviesappbootcamp.common.MovieType
 import com.example.moviesappbootcamp.common.Resource
 import com.example.moviesappbootcamp.data.remote.MovieApi
-import com.example.moviesappbootcamp.domain.model.MovieLayoutModel
+import com.example.moviesappbootcamp.domain.model.MovieLayoutModelsWithTotalPage
 import com.example.moviesappbootcamp.domain.model.MovieModelWithType
 import com.example.moviesappbootcamp.domain.repository.MovieRepository
 import kotlinx.coroutines.flow.Flow
@@ -33,11 +33,12 @@ class MovieRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun searchMovies(query: String): Flow<Resource<List<MovieLayoutModel>>> {
+    override suspend fun searchMovies(query: String, page : Int): Flow<Resource<MovieLayoutModelsWithTotalPage>> {
         return flow {
             emit(Resource.Loading())
             try {
-                emit(Resource.Success(movieApi.searchMovie(query).body()!!.resultDtos.map { it.toMovieLayoutModel() }))
+                val result = movieApi.searchMovie(query,page).body()!!
+                emit(Resource.Success(MovieLayoutModelsWithTotalPage(result.resultDtos.map { it.toMovieLayoutModel() },result.totalPages)))
             }catch (e:Exception){
                 emit(Resource.Error(message = e.localizedMessage?:"Unexpected error occurred"))
             }

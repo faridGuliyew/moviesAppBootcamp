@@ -23,5 +23,5 @@ interface MovieApi {
 
     //returns the same object as in top rated response
     @GET("search/movie")
-    suspend fun searchMovie(@Query("query") query : String, @Query("api_key") apiKey : String = API_KEY) : Response<TopRatedResponseDto>
+    suspend fun searchMovie(@Query("query") query : String, @Query("page") page : Int = 1, @Query("api_key") apiKey : String = API_KEY) : Response<TopRatedResponseDto>
 }

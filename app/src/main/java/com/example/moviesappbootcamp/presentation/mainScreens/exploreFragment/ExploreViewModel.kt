@@ -1,5 +1,6 @@
 package com.example.moviesappbootcamp.presentation.mainScreens.exploreFragment
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moviesappbootcamp.common.MovieType
@@ -24,14 +25,34 @@ class ExploreViewModel @Inject constructor(
     private val _result = MutableStateFlow<Resource<List<MovieLayoutModel>>?>(null)
     val result = _result.asStateFlow()
 
+    private var currentPage = 1
+    private var maxPageCount = 100
+
     init {
         defaultMovies()
     }
 
     fun searchMovies(query : String){
         viewModelScope.launch {
-            searchMoviesUseCase(query).collectLatest {
-                _result.emit(it)
+            searchMoviesUseCase(query,currentPage).collectLatest {
+                when(it){
+                    is Resource.Loading->{
+                        _result.emit(Resource.Loading())
+                    }
+                    is Resource.Error->{
+                        _result.emit(Resource.Error(it.message?:"Unexpected error occurred"))
+                    }
+                    is Resource.Success->{
+                        _result.emit(Resource.Success(it.data!!.movieLayoutModels))
+                        maxPageCount = it.data.totalPage
+                    }
+                }
+            }
+            Log.e("explore",maxPageCount.toString())
+            if (currentPage < maxPageCount){
+                currentPage++
+            }else{
+                _result.emit(Resource.Error("This is the last page available."))
             }
         }
     }
@@ -44,5 +65,9 @@ class ExploreViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun resetPager(){
+        currentPage = 1
     }
 }

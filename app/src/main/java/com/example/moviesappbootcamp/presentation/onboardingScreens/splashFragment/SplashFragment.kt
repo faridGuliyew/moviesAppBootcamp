@@ -7,6 +7,7 @@ import com.example.moviesappbootcamp.base.BaseFragment
 import com.example.moviesappbootcamp.common.PrefManager
 import com.example.moviesappbootcamp.databinding.FragmentSplashBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -14,12 +15,13 @@ import kotlinx.coroutines.launch
 class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding::inflate) {
 
     private val viewModel by viewModels<SplashViewModel>()
+    private var job : Job? = null
     override fun onViewCreatedLight() {
         navigate(2000)
     }
     
     private fun navigate(delayInMillis : Long){
-        lifecycleScope.launch {
+        job = lifecycleScope.launch {
             delay(delayInMillis)
             val destination =
                 if (viewModel.getUid() != null) SplashFragmentDirections.actionSplashFragmentToMainFragment()
@@ -28,5 +30,10 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
                 findNavController().navigate(destination)
             }catch (_:Exception){}
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job?.cancel()
     }
 }

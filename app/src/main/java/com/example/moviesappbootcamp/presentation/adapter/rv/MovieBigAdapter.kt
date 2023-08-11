@@ -33,6 +33,10 @@ class MovieBigAdapter : RecyclerView.Adapter<MovieBigAdapter.MovieViewHolder>(){
     fun updateAdapter(newData : List<MovieLayoutModel>){
         differ.submitList(newData)
     }
+    fun getCurrentList() = differ.currentList
+    fun resetAdapter(){
+        differ.submitList(emptyList())
+    }
 
     private val diffCallback = object : DiffUtil.ItemCallback<MovieLayoutModel>(){
         override fun areItemsTheSame(

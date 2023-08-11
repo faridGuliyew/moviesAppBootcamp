@@ -22,10 +22,6 @@ import kotlinx.coroutines.flow.onEach
 class SignupFragment : BaseFragment<FragmentSignupBinding>(FragmentSignupBinding::inflate) {
 
     private val viewModel by viewModels<SignUpViewModel>()
-    private val prefManager by lazy {
-        PrefManager(requireContext())
-    }
-
 
     override fun onViewCreatedLight() {
         observe()
@@ -44,7 +40,7 @@ class SignupFragment : BaseFragment<FragmentSignupBinding>(FragmentSignupBinding
                     is Resource.Success -> {
                         fancyToast(requireContext(),"Account created successfully!",FancyToast.SUCCESS)
                         if (binding.checkBox.isChecked){
-                            prefManager.uid = it.data
+                            rememberUid(it.data)
                         }
                         findNavController().navigate(SignupFragmentDirections.actionSignupFragmentToMainFragment())
                         loadingDialog.dismiss()

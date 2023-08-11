@@ -23,13 +23,6 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>(FragmentSignInBinding
 
     private val viewModel by viewModels<SignInViewModel>()
 
-    //
-    private val prefManager by lazy {
-        PrefManager(requireContext())
-    }
-
-    private val TAG = "SignInFragment"
-
     override fun onViewCreatedLight() {
         observe()
         setClickEvents()
@@ -46,7 +39,7 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>(FragmentSignInBinding
                     is Resource.Success -> {
                         fancyToast(requireContext(),"Logged in successfully!",FancyToast.SUCCESS)
                         if (binding.checkBox.isChecked){
-                            prefManager.uid = it.data
+                            viewModel.rememberUid(it.data)
                         }
                         findNavController().navigate(SignInFragmentDirections.actionSignInFragmentToMainFragment())
                         loadingDialog.dismiss()

@@ -2,6 +2,7 @@ package com.example.moviesappbootcamp.presentation.onboardingScreens.signInFragm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.moviesappbootcamp.common.PrefManager
 import com.example.moviesappbootcamp.common.Resource
 import com.example.moviesappbootcamp.domain.use_case.MailLoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    private val mailLoginUseCase: MailLoginUseCase
+    private val mailLoginUseCase: MailLoginUseCase,
+    private val prefManager: PrefManager
 ) : ViewModel() {
 
     private val _mailLoginResult = MutableStateFlow<Resource<String>>(Resource.Loading())
@@ -25,5 +27,8 @@ class SignInViewModel @Inject constructor(
                 _mailLoginResult.emit(it)
             }
         }
+    }
+    fun rememberUid(uid : String?){
+        prefManager.uid = uid
     }
 }

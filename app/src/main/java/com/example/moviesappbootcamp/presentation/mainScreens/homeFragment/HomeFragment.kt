@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.CompositePageTransformer
 import com.example.moviesappbootcamp.base.BaseFragment
 import com.example.moviesappbootcamp.common.MovieType
 import com.example.moviesappbootcamp.common.Resource
@@ -25,6 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.lang.Float
+import kotlin.math.abs
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::inflate) {
@@ -127,6 +129,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
     private fun setViewPager() {
         val viewPager = binding.topMoviesViewPager
         viewPager.adapter = viewPagerAdapter
+
+        val transformer = CompositePageTransformer()
+        transformer.addTransformer { page, position ->
+            page.scaleX = abs(1 - 0.85*position).toFloat()
+            page.scaleY = abs(1 - 0.85*position).toFloat()
+        }
+        viewPager.setPageTransformer(transformer)
     }
 
     private fun goToExplore(){

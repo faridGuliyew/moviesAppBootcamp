@@ -102,4 +102,7 @@ dependencies {
 
     //Security Crypto
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
+
+    //Showcase view
+    implementation ("com.github.mreram:ShowCaseView:1.4.1")
 }

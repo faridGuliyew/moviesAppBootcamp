@@ -102,4 +102,7 @@ dependencies {
 
     //Security Crypto
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
+
+    //Paging 3.0
+    implementation("androidx.paging:paging-runtime:3.1.1")
 }

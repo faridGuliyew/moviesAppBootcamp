@@ -13,6 +13,8 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviesappbootcamp.R
@@ -22,9 +24,11 @@ import com.example.moviesappbootcamp.common.Resource
 import com.example.moviesappbootcamp.databinding.FragmentExploreBinding
 import com.example.moviesappbootcamp.domain.model.MovieLayoutModel
 import com.example.moviesappbootcamp.presentation.adapter.rv.MovieBigAdapter
+import com.example.moviesappbootcamp.presentation.adapter.rv.SearchPagingAdapter
 import com.example.moviesappbootcamp.presentation.custom.CustomLoadingDialog
 import com.example.moviesappbootcamp.presentation.mainScreens.filterFragment.FilterFragment
 import com.example.moviesappbootcamp.utils.fancyToast
+import com.google.android.gms.dynamic.IFragmentWrapper
 import com.shashank.sony.fancytoastlib.FancyToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -35,12 +39,17 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(FragmentExploreBind
 
     private val viewModel by viewModels<ExploreViewModel>()
     private val searchAdapter = MovieBigAdapter()
-    //pagination
-    private var isLoading = false
-    private var isLastPage = false
+    private val loadingDialog by lazy {
+        CustomLoadingDialog(requireContext(), layoutInflater, "Please wait...", true)
+    }
+    private lateinit var searchRv : RecyclerView
+
+    private val pagingAdapter = SearchPagingAdapter()
+    //
     private var savedQuery = ""
 
     override fun onViewCreatedLight() {
+        searchRv =  binding.rvExplore
         observe()
         setRv()
         setSearch()
@@ -48,39 +57,39 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(FragmentExploreBind
     }
 
     private fun observe() {
-        val loadingDialog =
-            CustomLoadingDialog(requireContext(), layoutInflater, "Please wait...", true)
         with(viewModel) {
+            pagingData.onEach {
+                if (searchRv.adapter !is SearchPagingAdapter){
+                    searchRv.adapter = pagingAdapter
+                }
+                it?.let {
+                    pagingAdapter.submitData(it)
+                }
+            }.launchIn(lifecycleScope)
+
             result.onEach {
                 when (it) {
                     is Resource.Loading -> {
-                        isLoading = true
                         loadingDialog.show()
                     }
 
                     is Resource.Error -> {
-                        isLoading = false
                         loadingDialog.dismiss()
-                        isLastPage= true
                         fancyToast(requireContext(), it.message!!, FancyToast.ERROR)
                     }
 
                     is Resource.Success -> {
-                        isLoading = false
-                        isLastPage = false
                         loadingDialog.dismiss()
+                        searchRv.adapter = searchAdapter
                         val movieModels = it.data!!
                         if (movieModels.isEmpty()){
+                            //
                             binding.imageViewNotFound.visibility = View.VISIBLE
                             fancyToast(requireContext(),"There is no result matching your keywords",FancyToast.INFO)
-                            searchAdapter.resetAdapter()
                         }else{
                             //todo move to repo or somewhere else
                             binding.imageViewNotFound.visibility = View.GONE
-                            val list = ArrayList(searchAdapter.getCurrentList())
-                            list.addAll(movieModels)
-                            Log.e("explore", list.size.toString())
-                            searchAdapter.updateAdapter(list)
+                            searchAdapter.differ.submitList(movieModels)
                         }
                     }
                     else -> {/*No emission is observed*/
@@ -95,8 +104,6 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(FragmentExploreBind
             if (i == EditorInfo.IME_ACTION_SEARCH){
                 val query = binding.editTextText.text.toString().trim()
                 savedQuery = query
-                searchAdapter.resetAdapter()
-                viewModel.resetPager()
                 if (query.isNotEmpty()){
                     viewModel.searchMovies(query)
                 }  else {
@@ -115,27 +122,15 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(FragmentExploreBind
     }
 
     private fun setRv(){
-        val searchRv = binding.rvExplore
-        searchRv.adapter = searchAdapter
 
-        var isScrolling = false
-        searchRv.addOnScrollListener(object : RecyclerView.OnScrollListener(){
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-                    isScrolling = true
+        pagingAdapter.addLoadStateListener {loadState->
+            when(loadState.source.refresh){
+                is LoadState.Error->{
+                    fancyToast(requireContext(),"Something went wrong",FancyToast.ERROR)
+                }else->{
+
                 }
             }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                if (layoutManager.findFirstVisibleItemPosition() + layoutManager.childCount >= layoutManager.itemCount && isScrolling && !isLoading && !isLastPage && savedQuery!=""){
-                    viewModel.searchMovies(savedQuery)
-                    isScrolling = false
-                }
-            }
-        })
+        }
     }
-
 }

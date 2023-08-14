@@ -3,6 +3,9 @@ package com.example.moviesappbootcamp.presentation.mainScreens.exploreFragment
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.PagingSource
+import androidx.paging.cachedIn
 import com.example.moviesappbootcamp.common.MovieType
 import com.example.moviesappbootcamp.common.Resource
 import com.example.moviesappbootcamp.domain.model.MovieLayoutModel
@@ -22,37 +25,21 @@ class ExploreViewModel @Inject constructor(
     private val getMoviesUseCase: GetMoviesUseCase
 ): ViewModel() {
 
+    //
+    private val _pagingData = MutableStateFlow<PagingData<MovieLayoutModel>?>(null)
+    val pagingData = _pagingData.asStateFlow()
+
     private val _result = MutableStateFlow<Resource<List<MovieLayoutModel>>?>(null)
     val result = _result.asStateFlow()
-
-    private var currentPage = 1
-    private var maxPageCount = 100
 
     init {
         defaultMovies()
     }
-
+//
     fun searchMovies(query : String){
         viewModelScope.launch {
-            searchMoviesUseCase(query,currentPage).collectLatest {
-                when(it){
-                    is Resource.Loading->{
-                        _result.emit(Resource.Loading())
-                    }
-                    is Resource.Error->{
-                        _result.emit(Resource.Error(it.message?:"Unexpected error occurred"))
-                    }
-                    is Resource.Success->{
-                        _result.emit(Resource.Success(it.data!!.movieLayoutModels))
-                        maxPageCount = it.data.totalPage
-                    }
-                }
-            }
-            Log.e("explore",maxPageCount.toString())
-            if (currentPage < maxPageCount){
-                currentPage++
-            }else{
-                _result.emit(Resource.Error("This is the last page available."))
+            searchMoviesUseCase.invoke(query).collectLatest {
+                _pagingData.emit(it)
             }
         }
     }
@@ -65,9 +52,5 @@ class ExploreViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    fun resetPager(){
-        currentPage = 1
     }
 }

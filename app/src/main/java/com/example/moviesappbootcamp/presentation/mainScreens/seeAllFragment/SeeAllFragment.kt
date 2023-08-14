@@ -55,7 +55,7 @@ class SeeAllFragment : BaseFragment<FragmentSeeAllBinding>(FragmentSeeAllBinding
                     is Resource.Success -> {
                         loadingDialog.dismiss()
                         val movieModels = it.data!!.movieLayoutModels
-                        seeAllAdapter.updateAdapter(movieModels)
+                        seeAllAdapter.differ.submitList(movieModels)
                     }
                     else -> {/*No emission is observed*/
                     }

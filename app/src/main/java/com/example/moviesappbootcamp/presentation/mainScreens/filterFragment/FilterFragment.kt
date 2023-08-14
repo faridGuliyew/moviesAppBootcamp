@@ -41,6 +41,7 @@ class FilterFragment : BottomSheetBaseFragment<FragmentFilterBinding>(FragmentFi
         val genresRv = binding.rvGenres
         genresRv.adapter = genresAdapter
 
+        //
         genresAdapter.updateAdapter(listOf(
             ChipFilter.Genre(GenreFilter.Action),
             ChipFilter.Genre(GenreFilter.Adventure),

@@ -18,7 +18,7 @@ class SignInViewModel @Inject constructor(
     private val prefManager: PrefManager
 ) : ViewModel() {
 
-    private val _mailLoginResult = MutableStateFlow<Resource<String>>(Resource.Loading())
+    private val _mailLoginResult = MutableStateFlow<Resource<String>?>(null)
     val mailLoginResult = _mailLoginResult.asStateFlow()
 
     fun mailLogin(mail : String,password : String){

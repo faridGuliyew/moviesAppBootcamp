@@ -34,6 +34,7 @@ class PopularMovieSmallAdapter : RecyclerView.Adapter<PopularMovieSmallAdapter.M
         differ.submitList(newData)
     }
 
+    //
     private val diffCallback = object : DiffUtil.ItemCallback<MovieLayoutModel>(){
         override fun areItemsTheSame(
             oldItem: MovieLayoutModel,

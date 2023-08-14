@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviesappbootcamp.R
@@ -61,6 +62,7 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(FragmentExploreBind
             pagingData.onEach {
                 if (searchRv.adapter !is SearchPagingAdapter){
                     searchRv.adapter = pagingAdapter
+                    searchRv.layoutManager = LinearLayoutManager(requireContext())
                 }
                 it?.let {
                     pagingAdapter.submitData(it)
@@ -81,6 +83,7 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(FragmentExploreBind
                     is Resource.Success -> {
                         loadingDialog.dismiss()
                         searchRv.adapter = searchAdapter
+                        searchRv.layoutManager = GridLayoutManager(requireContext(),2)
                         val movieModels = it.data!!
                         if (movieModels.isEmpty()){
                             //

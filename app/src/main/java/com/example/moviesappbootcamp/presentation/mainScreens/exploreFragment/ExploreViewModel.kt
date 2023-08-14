@@ -38,7 +38,7 @@ class ExploreViewModel @Inject constructor(
 //
     fun searchMovies(query : String){
         viewModelScope.launch {
-            searchMoviesUseCase.invoke(query).collectLatest {
+            searchMoviesUseCase.invoke(query).cachedIn(this).collectLatest {
                 _pagingData.emit(it)
             }
         }

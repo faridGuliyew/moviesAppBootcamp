@@ -4,7 +4,6 @@ import androidx.paging.PagingData
 import com.example.moviesappbootcamp.common.MovieType
 import com.example.moviesappbootcamp.common.Resource
 import com.example.moviesappbootcamp.domain.model.MovieLayoutModel
-import com.example.moviesappbootcamp.domain.model.MovieLayoutModelsWithTotalPage
 import com.example.moviesappbootcamp.domain.model.MovieModelWithType
 import kotlinx.coroutines.flow.Flow
 

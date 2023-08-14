@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviesappbootcamp.base.diffUtil.DiffCallbackBase
 import com.example.moviesappbootcamp.databinding.ItemMovieSearchBinding
 import com.example.moviesappbootcamp.domain.model.MovieLayoutModel
 
@@ -27,19 +28,7 @@ class SearchPagingAdapter : PagingDataAdapter<MovieLayoutModel, SearchPagingAdap
         )
     }
 
-    object MyDiffCallback : DiffUtil.ItemCallback<MovieLayoutModel>(){
-        override fun areItemsTheSame(
-            oldItem: MovieLayoutModel,
-            newItem: MovieLayoutModel,
-        ): Boolean {
-            return oldItem.movieId == newItem.movieId
-        }
-
-        override fun areContentsTheSame(
-            oldItem: MovieLayoutModel,
-            newItem: MovieLayoutModel,
-        ): Boolean {
-            return oldItem == newItem
-        }
+    companion object{
+        val MyDiffCallback = DiffCallbackBase<MovieLayoutModel>()
     }
 }

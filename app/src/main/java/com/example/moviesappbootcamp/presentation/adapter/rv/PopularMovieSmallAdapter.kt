@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviesappbootcamp.base.diffUtil.DiffCallbackBase
 import com.example.moviesappbootcamp.databinding.ItemMovieSmallBinding
 import com.example.moviesappbootcamp.domain.model.MovieLayoutModel
 
@@ -34,22 +35,5 @@ class PopularMovieSmallAdapter : RecyclerView.Adapter<PopularMovieSmallAdapter.M
         differ.submitList(newData)
     }
 
-    //
-    private val diffCallback = object : DiffUtil.ItemCallback<MovieLayoutModel>(){
-        override fun areItemsTheSame(
-            oldItem: MovieLayoutModel,
-            newItem: MovieLayoutModel,
-        ): Boolean {
-            return oldItem.movieId == newItem.movieId
-        }
-
-        override fun areContentsTheSame(
-            oldItem: MovieLayoutModel,
-            newItem: MovieLayoutModel,
-        ): Boolean {
-            return oldItem == newItem
-        }
-    }
-
-    private val differ = AsyncListDiffer(this,diffCallback)
+    private val differ = AsyncListDiffer(this,DiffCallbackBase<MovieLayoutModel>())
 }

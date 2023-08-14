@@ -3,7 +3,9 @@ package com.example.moviesappbootcamp.presentation.adapter.rv
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviesappbootcamp.base.diffUtil.DiffCallbackBase
 import com.example.moviesappbootcamp.common.ChipFilter
 import com.example.moviesappbootcamp.databinding.FragmentFilterBinding
 import com.example.moviesappbootcamp.databinding.ItemFilterBinding
@@ -11,7 +13,7 @@ import com.example.moviesappbootcamp.databinding.ItemFilterBinding
 class FilterChipAdapter : RecyclerView.Adapter<FilterChipAdapter.FilterChipViewHolder>() {
     inner class FilterChipViewHolder (val itemFilterBinding: ItemFilterBinding) : RecyclerView.ViewHolder(itemFilterBinding.root)
 
-    private val chips = arrayListOf<ChipFilter>()
+
     private var selectedChipPosition = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FilterChipViewHolder {
@@ -21,12 +23,12 @@ class FilterChipAdapter : RecyclerView.Adapter<FilterChipAdapter.FilterChipViewH
     }
 
     override fun getItemCount(): Int {
-        return chips.size
+        return differ.currentList.size
     }
 
     //
     override fun onBindViewHolder(holder: FilterChipViewHolder, position: Int) {
-        val chip = chips[position]
+        val chip = differ.currentList[position]
         with(holder.itemFilterBinding){
             filter = chip
             layoutChip.setOnClickListener {
@@ -42,17 +44,15 @@ class FilterChipAdapter : RecyclerView.Adapter<FilterChipAdapter.FilterChipViewH
     }
 
     fun updateAdapter(newData : List<ChipFilter>){
-        chips.clear()
-        chips.addAll(newData)
-        notifyDataSetChanged()
+        differ.submitList(newData)
     }
 
     private fun onChipSelected(position : Int){
         selectedChipPosition = position
-        notifyDataSetChanged()
     }
     fun reset(){
         selectedChipPosition = -1
-        notifyDataSetChanged()
     }
+
+    private val differ = AsyncListDiffer(this,DiffCallbackBase<ChipFilter>())
 }

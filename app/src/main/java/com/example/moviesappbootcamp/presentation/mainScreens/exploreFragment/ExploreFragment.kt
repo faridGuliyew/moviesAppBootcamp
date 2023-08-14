@@ -29,28 +29,30 @@ import com.example.moviesappbootcamp.presentation.adapter.rv.SearchPagingAdapter
 import com.example.moviesappbootcamp.presentation.custom.CustomLoadingDialog
 import com.example.moviesappbootcamp.presentation.mainScreens.filterFragment.FilterFragment
 import com.example.moviesappbootcamp.utils.fancyToast
+import com.example.moviesappbootcamp.utils.gone
+import com.example.moviesappbootcamp.utils.visible
 import com.google.android.gms.dynamic.IFragmentWrapper
 import com.shashank.sony.fancytoastlib.FancyToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ExploreFragment : BaseFragment<FragmentExploreBinding>(FragmentExploreBinding::inflate) {
 
     private val viewModel by viewModels<ExploreViewModel>()
-    private val searchAdapter = MovieBigAdapter()
+    private val recommendedAdapter = MovieBigAdapter()
     private val loadingDialog by lazy {
         CustomLoadingDialog(requireContext(), layoutInflater, "Please wait...", true)
     }
-    private lateinit var searchRv : RecyclerView
 
     private val pagingAdapter = SearchPagingAdapter()
+
     //
     private var savedQuery = ""
 
     override fun onViewCreatedLight() {
-        searchRv =  binding.rvExplore
         observe()
         setRv()
         setSearch()
@@ -59,58 +61,47 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(FragmentExploreBind
 
     private fun observe() {
         with(viewModel) {
-            pagingData.onEach {
-                if (searchRv.adapter !is SearchPagingAdapter){
-                    searchRv.adapter = pagingAdapter
-                    searchRv.layoutManager = LinearLayoutManager(requireContext())
-                }
-                it?.let {
+            pagingData.observe(viewLifecycleOwner) {
+                lifecycleScope.launch {
                     pagingAdapter.submitData(it)
                 }
-            }.launchIn(lifecycleScope)
-
-            result.onEach {
-                when (it) {
-                    is Resource.Loading -> {
+            }
+            uiState.observe(viewLifecycleOwner){
+                when(it){
+                    is ExploreUiState.Loading->{
                         loadingDialog.show()
                     }
-
-                    is Resource.Error -> {
+                    is ExploreUiState.Error->{
                         loadingDialog.dismiss()
-                        fancyToast(requireContext(), it.message!!, FancyToast.ERROR)
+                        fancyToast(requireContext(), "Something went wrong. Please check your internet connectivity", FancyToast.ERROR)
                     }
-
-                    is Resource.Success -> {
+                    is ExploreUiState.Success->{
+                        recommendedAdapter.differ.submitList(it.data)
                         loadingDialog.dismiss()
-                        searchRv.adapter = searchAdapter
-                        searchRv.layoutManager = GridLayoutManager(requireContext(),2)
-                        val movieModels = it.data!!
-                        if (movieModels.isEmpty()){
-                            //
-                            binding.imageViewNotFound.visibility = View.VISIBLE
-                            fancyToast(requireContext(),"There is no result matching your keywords",FancyToast.INFO)
-                        }else{
-                            //todo move to repo or somewhere else
-                            binding.imageViewNotFound.visibility = View.GONE
-                            searchAdapter.differ.submitList(movieModels)
-                        }
-                    }
-                    else -> {/*No emission is observed*/
                     }
                 }
-            }.launchIn(lifecycleScope)
+            }
         }
     }
 
-    private fun setSearch(){
+    private fun setSearch() {
+        val searchLayout = binding.searchLayout
+        val recommendedLayout = binding.recommendedLayout
+        val notFoundImageView = binding.imageViewNotFound
+
         binding.editTextText.setOnEditorActionListener { _, i, _ ->
-            if (i == EditorInfo.IME_ACTION_SEARCH){
-                val query = binding.editTextText.text.toString().trim()
-                savedQuery = query
-                if (query.isNotEmpty()){
-                    viewModel.searchMovies(query)
-                }  else {
+            if (i == EditorInfo.IME_ACTION_SEARCH) {
+                savedQuery = binding.editTextText.text.toString().trim()
+
+                if (savedQuery.isNotEmpty()) {
+                    viewModel.searchMovies(savedQuery)
+                    searchLayout.visible()
+                    recommendedLayout.gone()
+                } else {
                     viewModel.defaultMovies()
+                    searchLayout.gone()
+                    notFoundImageView.gone()
+                    recommendedLayout.visible()
                 }
                 return@setOnEditorActionListener true
             }
@@ -118,20 +109,43 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(FragmentExploreBind
         }
     }
 
-    private fun goToFilter(){
+    private fun goToFilter() {
         binding.buttonFilter.setOnClickListener {
-            FilterFragment().show(childFragmentManager,"FilterFragment")
+            FilterFragment().show(childFragmentManager, "FilterFragment")
         }
     }
 
-    private fun setRv(){
+    private fun setRv() {
+        val recommendedRv = binding.recommendedRv
+        recommendedRv.adapter = recommendedAdapter
 
-        pagingAdapter.addLoadStateListener {loadState->
-            when(loadState.source.refresh){
-                is LoadState.Error->{
-                    fancyToast(requireContext(),"Something went wrong",FancyToast.ERROR)
-                }else->{
+        val searchRv = binding.searchRv
 
+        val notFoundImageView = binding.imageViewNotFound
+
+        searchRv.adapter = pagingAdapter
+
+        pagingAdapter.addLoadStateListener { loadState ->
+            if (loadState.append.endOfPaginationReached) {
+                if (pagingAdapter.itemCount < 1) {
+                    notFoundImageView.visible()
+                } else {
+                    notFoundImageView.gone()
+                }
+            } else {
+                notFoundImageView.gone()
+            }
+            when (loadState.source.refresh) {
+                is LoadState.Error -> {
+                    fancyToast(requireContext(), "Something went wrong", FancyToast.ERROR)
+                }
+
+                is LoadState.Loading -> {
+                    loadingDialog.show()
+                }
+
+                else -> {
+                    loadingDialog.dismiss()
                 }
             }
         }

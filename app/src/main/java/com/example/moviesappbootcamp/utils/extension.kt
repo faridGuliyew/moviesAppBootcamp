@@ -1,5 +1,6 @@
 package com.example.moviesappbootcamp.utils
 
+import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.TransitionOptions
@@ -19,4 +20,11 @@ fun ImageView.setImageWithGlide(image : String, requirePlaceholder : Boolean = t
             .error(R.drawable.img_placeholder)
             .into(this)
     }
+}
+
+fun View.visible(){
+    visibility = View.VISIBLE
+}
+fun View.gone(){
+    visibility = View.GONE
 }

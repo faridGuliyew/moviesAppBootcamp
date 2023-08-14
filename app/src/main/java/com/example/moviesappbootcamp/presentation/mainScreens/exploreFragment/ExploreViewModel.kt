@@ -1,6 +1,8 @@
 package com.example.moviesappbootcamp.presentation.mainScreens.exploreFragment
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -26,11 +28,14 @@ class ExploreViewModel @Inject constructor(
 ): ViewModel() {
 
     //
-    private val _pagingData = MutableStateFlow<PagingData<MovieLayoutModel>?>(null)
-    val pagingData = _pagingData.asStateFlow()
+    private val _pagingData = MutableLiveData<PagingData<MovieLayoutModel>>()
+    val pagingData : LiveData<PagingData<MovieLayoutModel>>
+        get() = _pagingData
 
-    private val _result = MutableStateFlow<Resource<List<MovieLayoutModel>>?>(null)
-    val result = _result.asStateFlow()
+
+    private val _uiState = MutableLiveData<ExploreUiState>()
+    val uiState : LiveData<ExploreUiState>
+        get() = _uiState
 
     init {
         defaultMovies()
@@ -39,7 +44,7 @@ class ExploreViewModel @Inject constructor(
     fun searchMovies(query : String){
         viewModelScope.launch {
             searchMoviesUseCase.invoke(query).cachedIn(this).collectLatest {
-                _pagingData.emit(it)
+                _pagingData.postValue(it)
             }
         }
     }
@@ -47,8 +52,16 @@ class ExploreViewModel @Inject constructor(
     fun defaultMovies(){
         viewModelScope.launch {
             getMoviesUseCase(MovieType.POPULAR).collectLatest {
-                it.data?.let { data->
-                    _result.emit(Resource.Success(data.movieLayoutModels))
+                when(it){
+                    is Resource.Loading->{
+                        _uiState.postValue(ExploreUiState.Loading)
+                    }
+                    is Resource.Success->{
+                        _uiState.postValue(ExploreUiState.Success(it.data?.movieLayoutModels.orEmpty()))
+                    }
+                    is Resource.Error->{
+                        _uiState.postValue(ExploreUiState.Error)
+                    }
                 }
             }
         }

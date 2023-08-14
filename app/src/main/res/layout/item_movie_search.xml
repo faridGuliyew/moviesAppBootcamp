@@ -38,7 +38,7 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/imageViewPosterPopular"
-            custom-loadImageWithGlide="@{movie.moviePoster}"
+            custom-loadImageWithGlide="@{movie.movieBackdrop}"
             requirePlaceholder="@{true}"
             android:layout_width="200dp"
             android:layout_height="160dp"
@@ -83,7 +83,8 @@
             android:ellipsize="end"
             android:fontFamily="@font/poppins"
             android:maxLines="2"
-            android:text="The Dark Knight Rises"
+            android:text="@{movie.movieName}"
+            tools:text="The Dark Knight Rises"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold"

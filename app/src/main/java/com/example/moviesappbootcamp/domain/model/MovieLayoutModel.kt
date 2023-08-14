@@ -1,6 +1,7 @@
 package com.example.moviesappbootcamp.domain.model
 
 import android.os.Parcelable
+import com.example.moviesappbootcamp.base.diffUtil.DiffItem
 import kotlinx.parcelize.Parcelize
 
 
@@ -13,4 +14,14 @@ data class MovieLayoutModel(
     val movieBackdrop : String? = "broken",
     val movieOverview : String? = "Overview is not available",
     val movieRating : Double? = 0.0
-)
+) : DiffItem() {
+    override fun areItemsTheSame(newItem: DiffItem): Boolean {
+        newItem as MovieLayoutModel
+        return movieId == newItem.movieId
+    }
+
+    override fun areContentsTheSame(newItem: DiffItem): Boolean {
+        newItem as MovieLayoutModel
+        return this == newItem
+    }
+}

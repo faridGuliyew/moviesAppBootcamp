@@ -26,7 +26,6 @@ class FilterChipAdapter : RecyclerView.Adapter<FilterChipAdapter.FilterChipViewH
         return differ.currentList.size
     }
 
-    //
     override fun onBindViewHolder(holder: FilterChipViewHolder, position: Int) {
         val chip = differ.currentList[position]
         with(holder.itemFilterBinding){

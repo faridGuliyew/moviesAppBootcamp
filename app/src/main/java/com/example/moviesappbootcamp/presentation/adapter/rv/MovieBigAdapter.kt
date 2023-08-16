@@ -3,15 +3,14 @@ package com.example.moviesappbootcamp.presentation.adapter.rv
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviesappbootcamp.base.diffUtil.DiffCallbackBase
 import com.example.moviesappbootcamp.databinding.ItemMovieBigBinding
-import com.example.moviesappbootcamp.domain.model.MovieLayoutModel
+import com.example.moviesappbootcamp.domain.model.MovieBriefUiModel
 
 class MovieBigAdapter : RecyclerView.Adapter<MovieBigAdapter.MovieViewHolder>(){
     inner class MovieViewHolder(private val itemMovieBigBinding: ItemMovieBigBinding) : RecyclerView.ViewHolder(itemMovieBigBinding.root){
-        fun bind(movieModel : MovieLayoutModel){
+        fun bind(movieModel : MovieBriefUiModel){
             with(itemMovieBigBinding){
                 movie = movieModel
             }
@@ -32,5 +31,5 @@ class MovieBigAdapter : RecyclerView.Adapter<MovieBigAdapter.MovieViewHolder>(){
         holder.bind(differ.currentList[position])
     }
 
-    val differ = AsyncListDiffer(this, DiffCallbackBase<MovieLayoutModel>())
+    val differ = AsyncListDiffer(this, DiffCallbackBase<MovieBriefUiModel>())
 }

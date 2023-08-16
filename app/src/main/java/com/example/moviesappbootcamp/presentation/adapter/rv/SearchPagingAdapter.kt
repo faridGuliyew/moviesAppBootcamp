@@ -3,17 +3,16 @@ package com.example.moviesappbootcamp.presentation.adapter.rv
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviesappbootcamp.base.diffUtil.DiffCallbackBase
 import com.example.moviesappbootcamp.databinding.ItemMovieSearchBinding
-import com.example.moviesappbootcamp.domain.model.MovieLayoutModel
+import com.example.moviesappbootcamp.domain.model.MovieBriefUiModel
 
-class SearchPagingAdapter : PagingDataAdapter<MovieLayoutModel, SearchPagingAdapter.SearchPagingViewHolder>(MyDiffCallback) {
+class SearchPagingAdapter : PagingDataAdapter<MovieBriefUiModel, SearchPagingAdapter.SearchPagingViewHolder>(MyDiffCallback) {
     inner class SearchPagingViewHolder (private val itemMovieSearchBinding: ItemMovieSearchBinding) : RecyclerView.ViewHolder(itemMovieSearchBinding.root){
-        fun bind(movieLayoutModel: MovieLayoutModel){
+        fun bind(movieBriefUiModel: MovieBriefUiModel){
             with(itemMovieSearchBinding){
-                movie = movieLayoutModel
+                movie = movieBriefUiModel
             }
         }
     }
@@ -29,6 +28,6 @@ class SearchPagingAdapter : PagingDataAdapter<MovieLayoutModel, SearchPagingAdap
     }
 
     companion object{
-        val MyDiffCallback = DiffCallbackBase<MovieLayoutModel>()
+        val MyDiffCallback = DiffCallbackBase<MovieBriefUiModel>()
     }
 }

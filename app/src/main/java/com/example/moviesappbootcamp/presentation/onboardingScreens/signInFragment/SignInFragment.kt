@@ -8,11 +8,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.moviesappbootcamp.base.BaseFragment
-import com.example.moviesappbootcamp.common.PrefManager
-import com.example.moviesappbootcamp.common.Resource
+import com.example.moviesappbootcamp.common.model.Resource
 import com.example.moviesappbootcamp.databinding.FragmentSignInBinding
 import com.example.moviesappbootcamp.presentation.custom.CustomLoadingDialog
-import com.example.moviesappbootcamp.utils.fancyToast
+import com.example.moviesappbootcamp.common.utils.fancyToast
 import com.shashank.sony.fancytoastlib.FancyToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn

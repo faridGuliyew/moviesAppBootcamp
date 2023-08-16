@@ -1,70 +1,133 @@
 package com.example.moviesappbootcamp.data.repository
 
 import android.util.Log
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.PagingSource
 import androidx.paging.map
 import com.example.moviesappbootcamp.common.MovieType
-import com.example.moviesappbootcamp.common.Resource
+import com.example.moviesappbootcamp.common.model.NetworkState
+import com.example.moviesappbootcamp.common.model.Resource
+import com.example.moviesappbootcamp.data.mapper.toBriefUiModel
+import com.example.moviesappbootcamp.data.mapper.toBriefUiModels
+import com.example.moviesappbootcamp.data.mapper.toBrieffUiModels
+import com.example.moviesappbootcamp.data.mapper.toCreditsUiModel
+import com.example.moviesappbootcamp.data.mapper.toDetailedUiModel
 import com.example.moviesappbootcamp.data.remote.MovieApi
-import com.example.moviesappbootcamp.data.remote.MoviePagingSource
-import com.example.moviesappbootcamp.domain.model.MovieLayoutModel
+import com.example.moviesappbootcamp.data.source.remote.RemoteSource
+import com.example.moviesappbootcamp.domain.model.CreditsUiModel
+import com.example.moviesappbootcamp.domain.model.MovieBriefUiModel
+import com.example.moviesappbootcamp.domain.model.MovieDetailedUiModel
 import com.example.moviesappbootcamp.domain.model.MovieModelWithType
 import com.example.moviesappbootcamp.domain.repository.MovieRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class MovieRepositoryImpl @Inject constructor(
-    private val movieApi: MovieApi
+    private val remoteSource: RemoteSource,
 ) : MovieRepository {
 
-    override suspend fun getMovies(movieType: MovieType): Flow<Resource<MovieModelWithType>> {
-        return flow {
-            emit(Resource.Loading())
-            try {
-                var result: MovieModelWithType
-                if (movieType == MovieType.POPULAR || movieType == MovieType.TOP_RATED){
-                    val request = movieApi.getTopRatedMovies(movieType.query)
-                    if (request.isSuccessful){
-                        result = MovieModelWithType(movieType,request.body()?.resultDtos.orEmpty().map { it.toMovieLayoutModel() })
-                        emit(Resource.Success(result))
-                    }else{
-                        emit(Resource.Error("Internal error occurred"))
+    private val TAG = "MovieRepository"
+    override suspend fun getTopRatedMovies(movieType: MovieType) =
+        flow {
+            emit(Resource.Loading)
+            remoteSource.getTopRatedMovies(movieType).collect {
+                when (it) {
+                    is NetworkState.Success -> {
+                        emit(
+                            Resource.Success(
+                                MovieModelWithType(
+                                    movieType,
+                                    it.data?.response?.resultDtos?.toBriefUiModels()
+                                        .orEmpty()
+                                )
+                            )
+                        )
                     }
-                }else{
-                    val request = movieApi.getRecentMovies(movieType.query)
-                    if (request.isSuccessful){
-                        result = MovieModelWithType(movieType,request.body()?.resultDtos.orEmpty().map { it.toMovieLayoutModel() })
-                        emit(Resource.Success(result))
-                    }else{
-                        emit(Resource.Error("Internal error occurred"))
+
+                    is NetworkState.Error -> {
+                        emit(Resource.Error(it.errorMessage))
                     }
                 }
-            }catch (e:Exception){
-                emit(Resource.Error(e.localizedMessage?:"Unexpected error occurred"))
+            }
+        }.flowOn(Dispatchers.IO).catch {
+            Log.e(TAG, "getTopRatedMovies: error")
+        }
+
+    override suspend fun getUpcomingMovies(movieType: MovieType) =
+        flow {
+            emit(Resource.Loading)
+            remoteSource.getUpcomingMovies(movieType).collect {
+                when (it) {
+                    is NetworkState.Success -> {
+                        emit(
+                            Resource.Success(
+                                MovieModelWithType(
+                                    movieType,
+                                    it.data?.response?.resultDtos?.toBrieffUiModels()
+                                        .orEmpty()
+                                )
+                            )
+                        )
+                    }
+
+                    is NetworkState.Error -> {
+                        emit(Resource.Error(it.errorMessage))
+                    }
+                }
+            }
+        }.flowOn(Dispatchers.IO).catch {
+            Log.e(TAG, "getUpcomingMovies: error")
+        }
+
+    override suspend fun getSingleMovie(movieId: Int) = flow {
+
+        emit(Resource.Loading)
+        remoteSource.getSingleMovie(movieId).collect{
+            when(it){
+                is NetworkState.Success->{
+                    val data = it.data
+                    emit(Resource.Success(data?.toDetailedUiModel()))
+                }
+                is NetworkState.Error->{
+                    emit(Resource.Error(it.errorMessage))
+                }
             }
         }
     }
 
-    override suspend fun searchMovies(query: String): Flow<PagingData<MovieLayoutModel>> {
-        return flow {
-            Pager(
-                config = PagingConfig(
-                    pageSize = 20,
-                    maxSize = PagingConfig.MAX_SIZE_UNBOUNDED,
-                    jumpThreshold = Int.MIN_VALUE,
-                    enablePlaceholders = true
-                ),
-                pagingSourceFactory = {
-                    MoviePagingSource(movieApi, query)
+    override suspend fun getMovieCredits(movieId: Int) = flow {
+        emit(Resource.Loading)
+        remoteSource.getMovieCredits(movieId).collect{
+            when(it){
+                is NetworkState.Success->{
+                    val data = it.data
+                    emit(Resource.Success(data?.cast?.toCreditsUiModel()))
                 }
-            ).flow.collect {
-                emit(it.map { dto-> dto.toMovieLayoutModel() })
+                is NetworkState.Error->{
+                    emit(Resource.Error(it.errorMessage))
+                }
             }
         }
+
     }
+
+    override suspend fun searchMovies(query: String) = flow {
+        remoteSource.searchMoviePagingResults(query)
+            .map { pagingData ->
+                pagingData.map {
+                    it.toBriefUiModel()
+                }
+            }
+            .catch {
+                Log.e(TAG, "search paging: error")
+            }
+            .collect {
+                emit(it)
+            }
+    }.flowOn(Dispatchers.IO)
 }

@@ -6,6 +6,8 @@ import com.example.moviesappbootcamp.common.PrefManager
 import com.example.moviesappbootcamp.data.remote.MovieApi
 import com.example.moviesappbootcamp.data.repository.FirebaseRepositoryImpl
 import com.example.moviesappbootcamp.data.repository.MovieRepositoryImpl
+import com.example.moviesappbootcamp.data.source.remote.RemoteSource
+import com.example.moviesappbootcamp.data.source.remote.RemoteSourceImpl
 import com.example.moviesappbootcamp.domain.repository.FirebaseRepository
 import com.example.moviesappbootcamp.domain.repository.MovieRepository
 import com.example.moviesappbootcamp.domain.use_case.MailLoginUseCase
@@ -34,9 +36,16 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideMovieRepository(movieApi: MovieApi) : MovieRepository{
-        return MovieRepositoryImpl(movieApi)
+    fun provideMovieRepository(remoteSource: RemoteSource) : MovieRepository{
+        return MovieRepositoryImpl(remoteSource)
     }
+
+    @Singleton
+    @Provides
+    fun provideRemoteSource(movieApi: MovieApi) : RemoteSource{
+        return RemoteSourceImpl(movieApi)
+    }
+
 
     @Singleton
     @Provides

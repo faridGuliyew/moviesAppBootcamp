@@ -1,6 +1,6 @@
 package com.example.moviesappbootcamp.data.repository
 
-import com.example.moviesappbootcamp.common.Resource
+import com.example.moviesappbootcamp.common.model.Resource
 import com.example.moviesappbootcamp.domain.repository.FirebaseRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +14,7 @@ class FirebaseRepositoryImpl @Inject constructor (
 
     override suspend fun mailSignUp(mail: String, password: String): Flow<Resource<String>> {
         return flow {
-            emit(Resource.Loading())
+            emit(Resource.Loading)
             try {
                 val request = auth.createUserWithEmailAndPassword(mail,password).await()
                 emit(Resource.Success(data = request.user!!.uid))
@@ -26,7 +26,7 @@ class FirebaseRepositoryImpl @Inject constructor (
 
     override suspend fun mailLogin(mail: String, password: String): Flow<Resource<String>> {
         return flow {
-            emit(Resource.Loading())
+            emit(Resource.Loading)
             try {
                 val request = auth.signInWithEmailAndPassword(mail,password).await()
                 emit(Resource.Success(data = request.user!!.uid))

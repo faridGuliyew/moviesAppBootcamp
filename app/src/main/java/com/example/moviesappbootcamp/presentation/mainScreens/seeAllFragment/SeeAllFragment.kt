@@ -1,22 +1,15 @@
 package com.example.moviesappbootcamp.presentation.mainScreens.seeAllFragment
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.moviesappbootcamp.R
 import com.example.moviesappbootcamp.base.BaseFragment
-import com.example.moviesappbootcamp.common.MovieType
-import com.example.moviesappbootcamp.common.Resource
+import com.example.moviesappbootcamp.common.model.Resource
 import com.example.moviesappbootcamp.databinding.FragmentSeeAllBinding
 import com.example.moviesappbootcamp.presentation.adapter.rv.MovieBigAdapter
 import com.example.moviesappbootcamp.presentation.custom.CustomLoadingDialog
-import com.example.moviesappbootcamp.utils.fancyToast
+import com.example.moviesappbootcamp.common.utils.fancyToast
 import com.shashank.sony.fancytoastlib.FancyToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -49,12 +42,12 @@ class SeeAllFragment : BaseFragment<FragmentSeeAllBinding>(FragmentSeeAllBinding
 
                     is Resource.Error -> {
                         loadingDialog.dismiss()
-                        fancyToast(requireContext(), it.message!!, com.shashank.sony.fancytoastlib.FancyToast.ERROR)
+                        fancyToast(requireContext(), it.message!!, FancyToast.ERROR)
                     }
 
                     is Resource.Success -> {
                         loadingDialog.dismiss()
-                        val movieModels = it.data!!.movieLayoutModels
+                        val movieModels = it.data!!.movieBriefUiModels
                         seeAllAdapter.differ.submitList(movieModels)
                     }
                     else -> {/*No emission is observed*/

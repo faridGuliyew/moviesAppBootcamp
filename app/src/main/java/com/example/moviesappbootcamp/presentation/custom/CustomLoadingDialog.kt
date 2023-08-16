@@ -10,7 +10,7 @@ import android.widget.TextView
 import com.example.moviesappbootcamp.R
 import com.example.moviesappbootcamp.databinding.CustomLoadingDialogBinding
 
-class CustomLoadingDialog (context : Context, layoutInflater: LayoutInflater, loadingText : String, cancellable : Boolean = false) : Dialog(context) {
+class CustomLoadingDialog (context : Context, layoutInflater: LayoutInflater, loadingText : String, cancellable : Boolean = true) : Dialog(context) {
     init {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(CustomLoadingDialogBinding.inflate(layoutInflater).root)
@@ -21,5 +21,6 @@ class CustomLoadingDialog (context : Context, layoutInflater: LayoutInflater, lo
 
     fun setDialogText(newText : String){
         findViewById<TextView>(R.id.textViewLoading).text = newText
+        show()
     }
 }

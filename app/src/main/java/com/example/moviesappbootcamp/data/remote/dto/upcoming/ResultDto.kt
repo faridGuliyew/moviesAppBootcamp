@@ -1,7 +1,7 @@
 package com.example.moviesappbootcamp.data.remote.dto.upcoming
 
 
-import com.example.moviesappbootcamp.domain.model.MovieLayoutModel
+import com.example.moviesappbootcamp.domain.model.MovieBriefUiModel
 import com.google.gson.annotations.SerializedName
 
 data class ResultDto(
@@ -33,15 +33,4 @@ data class ResultDto(
     val voteAverage: Double,
     @SerializedName("vote_count")
     val voteCount: Int
-) {
-    fun toMovieLayoutModel() : MovieLayoutModel{
-        return MovieLayoutModel(
-            movieId = id,
-            movieName = originalTitle,
-            moviePoster = posterPath,
-            movieBackdrop = backdropPath,
-            movieOverview = overview,
-            movieRating = voteAverage
-        )
-    }
-}
+)

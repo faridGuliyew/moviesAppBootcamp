@@ -1,11 +1,9 @@
-package com.example.moviesappbootcamp.data.remote
+package com.example.moviesappbootcamp.data
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.example.moviesappbootcamp.data.remote.MovieApi
 import com.example.moviesappbootcamp.data.remote.dto.top_rated.ResultDto
-import com.example.moviesappbootcamp.data.remote.dto.top_rated.TopRatedResponseDto
-import com.example.moviesappbootcamp.domain.model.MovieLayoutModel
 
 const val firstPageIndex = 1
 
@@ -23,7 +21,6 @@ class MoviePagingSource(
                 nextKey = if (response.body()?.resultDtos?.isEmpty() == true) null else page.plus(1)
             )
         } catch (e: Exception) {
-            Log.e("pagingsource-e", e.toString())
             LoadResult.Error(e)
         }
     }

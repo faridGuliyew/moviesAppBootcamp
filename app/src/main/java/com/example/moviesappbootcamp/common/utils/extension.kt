@@ -1,4 +1,4 @@
-package com.example.moviesappbootcamp.utils
+package com.example.moviesappbootcamp.common.utils
 
 import android.view.View
 import android.widget.ImageView

@@ -1,12 +1,16 @@
 package com.example.moviesappbootcamp.presentation.mainScreens.homeFragment
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moviesappbootcamp.common.MovieType
-import com.example.moviesappbootcamp.common.Resource
-import com.example.moviesappbootcamp.domain.model.MovieLayoutModel
+import com.example.moviesappbootcamp.common.model.Resource
+import com.example.moviesappbootcamp.domain.model.MovieBriefUiModel
 import com.example.moviesappbootcamp.domain.model.MovieModelWithType
-import com.example.moviesappbootcamp.domain.use_case.GetMoviesUseCase
+import com.example.moviesappbootcamp.domain.use_case.GetTopRatedMoviesUseCase
+import com.example.moviesappbootcamp.domain.use_case.GetUpcomingMoviesUseCase
+import com.example.moviesappbootcamp.presentation.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,23 +20,57 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getMoviesUseCase: GetMoviesUseCase
+    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
+    private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase,
 ) : ViewModel() {
 
-    private val _result = MutableStateFlow<Resource<MovieModelWithType>?>(null)
-    val result = _result.asStateFlow()
+    private val _result = MutableLiveData<UiState<MovieModelWithType>>()
+    val result: LiveData<UiState<MovieModelWithType>>
+        get() = _result
 
     init {
-        getMovies(MovieType.POPULAR)
-        getMovies(MovieType.TOP_RATED)
-        getMovies(MovieType.RECENT)
-        getMovies(MovieType.NOW_PLAYING)
+        getTopRatedMovies(MovieType.POPULAR)
+        getTopRatedMovies(MovieType.TOP_RATED)
+        getUpcomingMovies(MovieType.RECENT)
+        getUpcomingMovies(MovieType.NOW_PLAYING)
     }
 
-    private fun getMovies(movieType: MovieType = MovieType.POPULAR){
+    private fun getTopRatedMovies(movieType: MovieType = MovieType.POPULAR) {
         viewModelScope.launch {
-            getMoviesUseCase(movieType).collectLatest {
-                _result.emit(it)
+            getTopRatedMoviesUseCase(movieType).collectLatest {
+                when (it) {
+                    is Resource.Loading -> {
+                        _result.value = UiState.Loading
+                    }
+
+                    is Resource.Error -> {
+                        _result.value = UiState.Error(it.message)
+                    }
+
+                    is Resource.Success -> {
+                        _result.value = UiState.Success(it.data)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getUpcomingMovies(movieType: MovieType = MovieType.RECENT) {
+        viewModelScope.launch {
+            getUpcomingMoviesUseCase(movieType).collectLatest {
+                when (it) {
+                    is Resource.Loading -> {
+                        _result.value = UiState.Loading
+                    }
+
+                    is Resource.Error -> {
+                        _result.value = UiState.Error(it.message)
+                    }
+
+                    is Resource.Success -> {
+                        _result.value = UiState.Success(it.data)
+                    }
+                }
             }
         }
     }

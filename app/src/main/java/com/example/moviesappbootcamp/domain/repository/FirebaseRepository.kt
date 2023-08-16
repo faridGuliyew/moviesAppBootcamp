@@ -1,6 +1,6 @@
 package com.example.moviesappbootcamp.domain.repository
 
-import com.example.moviesappbootcamp.common.Resource
+import com.example.moviesappbootcamp.common.model.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface FirebaseRepository {

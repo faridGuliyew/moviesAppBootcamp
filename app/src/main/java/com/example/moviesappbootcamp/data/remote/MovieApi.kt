@@ -1,6 +1,8 @@
 package com.example.moviesappbootcamp.data.remote
 
 import com.example.moviesappbootcamp.common.Constants.API_KEY
+import com.example.moviesappbootcamp.data.remote.dto.credits.CreditsResponseDto
+import com.example.moviesappbootcamp.data.remote.dto.single.SingleMovieResponseDto
 import com.example.moviesappbootcamp.data.remote.dto.top_rated.TopRatedResponseDto
 import com.example.moviesappbootcamp.data.remote.dto.upcoming.UpcomingMoviesResponseDto
 import retrofit2.Response
@@ -24,4 +26,10 @@ interface MovieApi {
     //returns the same object as in top rated response
     @GET("search/movie")
     suspend fun searchMovie(@Query("query") query : String, @Query("page") page : Int = 1, @Query("api_key") apiKey : String = API_KEY) : Response<TopRatedResponseDto>
+
+    @GET("movie/{id}")
+    suspend fun getSingleMovie(@Path("id") id : Int, @Query("api_key") apiKey: String = API_KEY) : Response<SingleMovieResponseDto>
+
+    @GET("movie/{id}/credits")
+    suspend fun getMovieCredits(@Path("id") id : Int, @Query("api_key") apiKey: String = API_KEY) : Response<CreditsResponseDto>
 }

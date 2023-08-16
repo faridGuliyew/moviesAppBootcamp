@@ -1,31 +1,21 @@
 package com.example.moviesappbootcamp.presentation.mainScreens.homeFragment
 
-import android.app.ActionBar
 import android.content.res.Resources
-import android.graphics.Movie
-import android.util.Log
-import android.view.View
-import android.widget.AbsListView
 import android.widget.Button
-import android.widget.ScrollView
-import android.widget.TextView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import com.example.moviesappbootcamp.base.BaseFragment
 import com.example.moviesappbootcamp.common.MovieType
-import com.example.moviesappbootcamp.common.Resource
 import com.example.moviesappbootcamp.databinding.FragmentHomeBinding
-import com.example.moviesappbootcamp.presentation.adapter.rv.PopularMovieSmallAdapter
+import com.example.moviesappbootcamp.presentation.adapter.rv.MovieSmallAdapter
 import com.example.moviesappbootcamp.presentation.adapter.vp.TopRatedViewPagerAdapter
 import com.example.moviesappbootcamp.presentation.custom.CustomLoadingDialog
-import com.example.moviesappbootcamp.utils.fancyToast
+import com.example.moviesappbootcamp.common.utils.fancyToast
+import com.example.moviesappbootcamp.presentation.UiState
 import com.shashank.sony.fancytoastlib.FancyToast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import java.lang.Float
 import kotlin.math.abs
 
 @AndroidEntryPoint
@@ -33,9 +23,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
     private val viewModel by viewModels<HomeViewModel>()
     private val viewPagerAdapter = TopRatedViewPagerAdapter()
-    private val topTenAdapter = PopularMovieSmallAdapter()
-    private val newReleasesAdapter = PopularMovieSmallAdapter()
-    private val recommendedAdapter = PopularMovieSmallAdapter()
+    private val topTenAdapter = MovieSmallAdapter()
+    private val newReleasesAdapter = MovieSmallAdapter()
+    private val recommendedAdapter = MovieSmallAdapter()
 
     override fun onViewCreatedLight() {
         observe()
@@ -49,39 +39,25 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         val loadingDialog =
             CustomLoadingDialog(requireContext(), layoutInflater, "Please wait...", true)
         with(viewModel) {
-            result.onEach {
-                when (it) {
-                    is Resource.Loading -> {
-                        loadingDialog.show()
-                    }
-
-                    is Resource.Error -> {
+            result.observe(viewLifecycleOwner){
+                when(it){
+                    is UiState.Loading-> loadingDialog.show()
+                    is UiState.Error -> {
                         loadingDialog.dismiss()
-                        fancyToast(requireContext(), it.message!!, FancyToast.ERROR)
+                        fancyToast(requireContext(),it.message,FancyToast.ERROR)
                     }
-
-                    is Resource.Success -> {
+                    is UiState.Success -> {
                         loadingDialog.dismiss()
-                        val movieModels = it.data!!.movieLayoutModels
+                        val data = it.data.movieBriefUiModels
                         when(it.data.movieType){
-                            is MovieType.POPULAR->{
-                                viewPagerAdapter.updateAdapter(movieModels)
-                            }
-                            is MovieType.TOP_RATED->{
-                                topTenAdapter.updateAdapter(movieModels.subList(0,10))
-                            }
-                            is MovieType.RECENT->{
-                                newReleasesAdapter.updateAdapter(movieModels)
-                            }
-                            is MovieType.NOW_PLAYING->{
-                                recommendedAdapter.updateAdapter(movieModels)
-                            }
+                            is MovieType.TOP_RATED->topTenAdapter.updateAdapter(data)
+                            is MovieType.POPULAR->viewPagerAdapter.updateAdapter(data)
+                            is MovieType.RECENT->newReleasesAdapter.updateAdapter(data)
+                            is MovieType.NOW_PLAYING -> recommendedAdapter.updateAdapter(data)
                         }
                     }
-                    else -> {/*No emission is observed*/
-                    }
                 }
-            }.launchIn(lifecycleScope)
+            }
         }
     }
 
@@ -106,24 +82,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         }
     }
 
-    private fun seeAllSetup(button : Button, movieType: MovieType){
-        button.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragment2ToSeeAllFragment(movieType))
-        }
-    }
-
     private fun setRv(){
-        val topTenRv = binding.rvTopTenPopular
-        topTenRv.adapter = topTenAdapter
-        seeAllSetup(binding.buttonPopularSeeAll,MovieType.TOP_RATED)
-
-        val newReleasesRv = binding.rvNewReleases
-        newReleasesRv.adapter = newReleasesAdapter
-        seeAllSetup(binding.buttonRecentSeeAll, MovieType.RECENT)
-
-        val recommendedRv = binding.rvRecommended
-        recommendedRv.adapter = recommendedAdapter
-        seeAllSetup(binding.buttonRecommendedSeeAll, MovieType.NOW_PLAYING)
+        rvSetup(binding.rvTopTenPopular,topTenAdapter,MovieType.TOP_RATED)
+        rvSetup(binding.rvNewReleases,newReleasesAdapter,MovieType.RECENT)
+        rvSetup(binding.rvRecommended,recommendedAdapter,MovieType.NOW_PLAYING)
     }
 
     private fun setViewPager() {
@@ -142,5 +104,20 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         binding.buttonSearch.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragment2ToExploreFragment())
         }
+    }
+
+    /*Setup*/
+    private fun seeAllSetup(button : Button, movieType: MovieType){
+        button.setOnClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragment2ToSeeAllFragment(movieType))
+        }
+    }
+
+    private fun rvSetup(rv : RecyclerView, adapter : MovieSmallAdapter, movieType: MovieType){
+        rv.adapter = adapter
+        adapter.setOnClickEvent { id->
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragment2ToDetailsFragment(id))
+        }
+        seeAllSetup(binding.buttonPopularSeeAll,movieType)
     }
 }

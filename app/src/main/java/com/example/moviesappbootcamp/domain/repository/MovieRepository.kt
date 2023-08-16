@@ -2,14 +2,22 @@ package com.example.moviesappbootcamp.domain.repository
 
 import androidx.paging.PagingData
 import com.example.moviesappbootcamp.common.MovieType
-import com.example.moviesappbootcamp.common.Resource
-import com.example.moviesappbootcamp.domain.model.MovieLayoutModel
+import com.example.moviesappbootcamp.common.model.Resource
+import com.example.moviesappbootcamp.domain.model.CreditsUiModel
+import com.example.moviesappbootcamp.domain.model.MovieBriefUiModel
+import com.example.moviesappbootcamp.domain.model.MovieDetailedUiModel
 import com.example.moviesappbootcamp.domain.model.MovieModelWithType
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
 
-    suspend fun getMovies(movieType: MovieType) : Flow<Resource<MovieModelWithType>>
+    suspend fun getTopRatedMovies(movieType: MovieType) : Flow<Resource<MovieModelWithType>>
 
-    suspend fun searchMovies(query : String) : Flow<PagingData<MovieLayoutModel>>
+    suspend fun getUpcomingMovies(movieType: MovieType) : Flow<Resource<MovieModelWithType>>
+
+    suspend fun getSingleMovie(movieId : Int) : Flow<Resource<MovieDetailedUiModel?>>
+
+    suspend fun getMovieCredits(movieId : Int) : Flow<Resource<List<CreditsUiModel>?>>
+
+    suspend fun searchMovies(query : String) : Flow<PagingData<MovieBriefUiModel>>
 }

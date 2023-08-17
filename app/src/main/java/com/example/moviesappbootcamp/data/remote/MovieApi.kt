@@ -30,6 +30,9 @@ interface MovieApi {
     @GET("movie/{id}")
     suspend fun getSingleMovie(@Path("id") id : Int, @Query("api_key") apiKey: String = API_KEY) : Response<SingleMovieResponseDto>
 
+    @GET("movie/{id}/recommendations")
+    suspend fun getRecommendedMovies(@Path("id") id : Int, @Query("api_key") apiKey : String = API_KEY) : Response<TopRatedResponseDto>
+
     @GET("movie/{id}/credits")
     suspend fun getMovieCredits(@Path("id") id : Int, @Query("api_key") apiKey: String = API_KEY) : Response<CreditsResponseDto>
 }

@@ -100,6 +100,23 @@ class MovieRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getRecommendedMovies(movieId: Int) = flow {
+
+        emit(Resource.Loading)
+
+        remoteSource.getRecommendedMovies(movieId)
+            .catch {
+                Log.e(TAG, "getRecommendedMovies: error")
+            }.collect{
+                when(it){
+                    is NetworkState.Error-> emit(Resource.Error(it.errorMessage))
+                    is NetworkState.Success->{
+                        emit(Resource.Success(it.data?.resultDtos?.toBriefUiModels().orEmpty()))
+                    }
+                }
+            }
+    }
+
     override suspend fun getMovieCredits(movieId: Int) = flow {
         emit(Resource.Loading)
         remoteSource.getMovieCredits(movieId).collect{

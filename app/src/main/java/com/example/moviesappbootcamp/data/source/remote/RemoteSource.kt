@@ -20,6 +20,8 @@ interface RemoteSource {
 
     suspend fun getSingleMovie(movieId : Int) : Flow<NetworkState<SingleMovieResponseDto>>
 
+    suspend fun getRecommendedMovies(movieId: Int) : Flow<NetworkState<TopRatedResponseDto>>
+
     suspend fun getMovieCredits(movieId : Int) : Flow<NetworkState<CreditsResponseDto>>
     suspend fun getTopRatedMovies(movieType: MovieType) : Flow<NetworkState<NetworkTopRatedMovieModelWithType>>
 

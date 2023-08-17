@@ -10,6 +10,7 @@ import com.example.moviesappbootcamp.data.remote.MovieApi
 import com.example.moviesappbootcamp.data.MoviePagingSource
 import com.example.moviesappbootcamp.data.mapper.toBriefUiModel
 import com.example.moviesappbootcamp.data.remote.dto.credits.CreditsResponseDto
+import com.example.moviesappbootcamp.data.remote.dto.top_rated.TopRatedResponseDto
 import com.example.moviesappbootcamp.domain.model.MovieModelWithType
 import com.example.moviesappbootcamp.domain.model.NetworkTopRatedMovieModelWithType
 import com.example.moviesappbootcamp.domain.model.NetworkUpcomingMovieModelWithType
@@ -47,6 +48,15 @@ class RemoteSourceImpl @Inject constructor(
             val response = movieApi.getSingleMovie(movieId)
             emit(NetworkState.Success(response.body()))
         } catch (e: Exception) {
+            emit(NetworkState.Error(e.localizedMessage?:"Unexpected error occurred."))
+        }
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun getRecommendedMovies(movieId: Int) = flow {
+        try {
+            val response = movieApi.getRecommendedMovies(movieId).body()
+            emit(NetworkState.Success(response))
+        }catch (e:Exception){
             emit(NetworkState.Error(e.localizedMessage?:"Unexpected error occurred."))
         }
     }.flowOn(Dispatchers.IO)

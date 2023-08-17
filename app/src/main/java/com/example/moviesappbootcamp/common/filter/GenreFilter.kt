@@ -1,5 +1,7 @@
 package com.example.moviesappbootcamp.common.filter
 
+import com.example.moviesappbootcamp.common.ChipFilter
+
 sealed class GenreFilter (val displayName : String, val code : Int){
     object Action : GenreFilter("Action", 28)
     object Adventure : GenreFilter("Adventure", 12)
@@ -17,4 +19,19 @@ sealed class GenreFilter (val displayName : String, val code : Int){
     object Western : GenreFilter("Western", 37)
     object Fantasy : GenreFilter("Fantasy", 14)
     object Horror : GenreFilter("Horror", 27)
+    object Undefined : GenreFilter ("Undefined",404)
+
+
+    companion object {
+        fun findGenreById(id: Int): GenreFilter {
+            var correspondingGenre: GenreFilter = Undefined
+            GenreFilter::class.sealedSubclasses.forEach { subclass ->
+                val obj = subclass.objectInstance
+                if (id == obj?.code) {
+                    correspondingGenre = obj
+                }
+            }
+            return correspondingGenre
+        }
+    }
 }

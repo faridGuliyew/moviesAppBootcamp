@@ -105,4 +105,5 @@ dependencies {
 
     //Paging 3.0
     implementation("androidx.paging:paging-runtime:3.1.1")
+    implementation(kotlin("reflect"))
 }

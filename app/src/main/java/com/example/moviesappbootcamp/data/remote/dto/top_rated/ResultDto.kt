@@ -36,4 +36,6 @@ data class ResultDto(
     val voteAverage: Double,
     @SerializedName("vote_count")
     val voteCount: Int,
+    @SerializedName("media_type")
+    val mediaType : String?
 )

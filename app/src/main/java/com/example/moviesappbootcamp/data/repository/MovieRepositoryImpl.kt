@@ -11,12 +11,14 @@ import com.example.moviesappbootcamp.data.mapper.toBriefUiModels
 import com.example.moviesappbootcamp.data.mapper.toBrieffUiModels
 import com.example.moviesappbootcamp.data.mapper.toCreditsUiModel
 import com.example.moviesappbootcamp.data.mapper.toDetailedUiModel
+import com.example.moviesappbootcamp.data.mapper.toReviewUiModels
 import com.example.moviesappbootcamp.data.remote.MovieApi
 import com.example.moviesappbootcamp.data.source.remote.RemoteSource
 import com.example.moviesappbootcamp.domain.model.CreditsUiModel
 import com.example.moviesappbootcamp.domain.model.MovieBriefUiModel
 import com.example.moviesappbootcamp.domain.model.MovieDetailedUiModel
 import com.example.moviesappbootcamp.domain.model.MovieModelWithType
+import com.example.moviesappbootcamp.domain.model.ReviewUiModel
 import com.example.moviesappbootcamp.domain.repository.MovieRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -131,7 +133,21 @@ class MovieRepositoryImpl @Inject constructor(
             }
         }
 
-    }
+    }.flowOn(Dispatchers.IO)
+
+    override suspend fun getReviews(movieId: Int) = flow {
+        emit(Resource.Loading)
+        remoteSource.getReviews(movieId).catch {
+            Log.e(TAG, "getReviews: error")
+        }.collect{
+            when(it){
+                is NetworkState.Error-> emit(Resource.Error(it.errorMessage))
+                is NetworkState.Success -> {
+                    emit(Resource.Success(it.data?.toReviewUiModels().orEmpty()))
+                }
+            }
+        }
+    }.flowOn(Dispatchers.IO)
 
     override suspend fun searchMovies(query: String) = flow {
         remoteSource.searchMoviePagingResults(query)

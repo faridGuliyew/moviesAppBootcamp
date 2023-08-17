@@ -2,6 +2,7 @@ package com.example.moviesappbootcamp.data.remote
 
 import com.example.moviesappbootcamp.common.Constants.API_KEY
 import com.example.moviesappbootcamp.data.remote.dto.credits.CreditsResponseDto
+import com.example.moviesappbootcamp.data.remote.dto.reviews.ReviewsResponseDto
 import com.example.moviesappbootcamp.data.remote.dto.single.SingleMovieResponseDto
 import com.example.moviesappbootcamp.data.remote.dto.top_rated.TopRatedResponseDto
 import com.example.moviesappbootcamp.data.remote.dto.upcoming.UpcomingMoviesResponseDto
@@ -30,8 +31,11 @@ interface MovieApi {
     @GET("movie/{id}")
     suspend fun getSingleMovie(@Path("id") id : Int, @Query("api_key") apiKey: String = API_KEY) : Response<SingleMovieResponseDto>
 
-    @GET("movie/{id}/recommendations")
+    @GET("movie/{id}/similar")
     suspend fun getRecommendedMovies(@Path("id") id : Int, @Query("api_key") apiKey : String = API_KEY) : Response<TopRatedResponseDto>
+
+    @GET("movie/{id}/reviews")
+    suspend fun getReviews(@Path("id") id : Int, @Query("api_key") apiKey: String = API_KEY) : Response<ReviewsResponseDto>
 
     @GET("movie/{id}/credits")
     suspend fun getMovieCredits(@Path("id") id : Int, @Query("api_key") apiKey: String = API_KEY) : Response<CreditsResponseDto>

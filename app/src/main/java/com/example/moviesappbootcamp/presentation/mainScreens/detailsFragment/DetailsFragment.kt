@@ -1,14 +1,11 @@
 package com.example.moviesappbootcamp.presentation.mainScreens.detailsFragment
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.content.Intent
+import android.content.res.Resources
+import android.util.Log
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.moviesappbootcamp.R
 import com.example.moviesappbootcamp.base.BaseFragment
 import com.example.moviesappbootcamp.common.ChipFilter
 import com.example.moviesappbootcamp.common.filter.GenreFilter
@@ -24,6 +21,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.shashank.sony.fancytoastlib.FancyToast
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBinding::inflate) {
 
@@ -37,6 +35,8 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
         setCreditsRv()
         setGenresRv()
         setViewPager()
+        share()
+        //setMotionAnimation()
         observe()
     }
 
@@ -59,7 +59,7 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                         loadingDialog.dismiss()
                         if (it.type == DetailsDataType.MOVIE_DETAILS){
                             binding.movie = it.data as MovieDetailedUiModel
-                            //İbrahim bəy bunu görməsin...
+                            //todo
                             genresAdapter.updateAdapter(it.data.movieGenres.map { genre-> ChipFilter.Genre(GenreFilter.findGenreById(genre.id)) })
                         }else{
                             creditsAdapter.differ.submitList(it.data as List<CreditsUiModel>)
@@ -89,4 +89,28 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
         }.attach()
     }
 
+    //todo
+    private fun setMotionAnimation() {
+        val image = binding.imageViewBackdrop
+        val scrollView = binding.scrollView
+        val container = binding.container
+        val initialChildCount = container.childCount
+        scrollView.viewTreeObserver.addOnScrollChangedListener {
+            val scrollHeight = scrollView.height
+            val movement = scrollView.scrollY.toFloat()
+            if (movement >= scrollHeight / 2 && container.childCount == initialChildCount){
+                container.removeView(image)
+            }
+            if (movement == 0f && container.childCount != initialChildCount){
+                container.addView(image)
+            }
+        }
+    }
+
+    private fun share(){
+        binding.buttonShare.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+            startActivity(intent)
+        }
+    }
 }

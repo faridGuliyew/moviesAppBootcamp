@@ -5,6 +5,7 @@ import com.example.moviesappbootcamp.common.MovieType
 import com.example.moviesappbootcamp.common.model.NetworkState
 import com.example.moviesappbootcamp.common.model.Resource
 import com.example.moviesappbootcamp.data.remote.dto.credits.CreditsResponseDto
+import com.example.moviesappbootcamp.data.remote.dto.reviews.ReviewsResponseDto
 import com.example.moviesappbootcamp.data.remote.dto.single.SingleMovieResponseDto
 import com.example.moviesappbootcamp.data.remote.dto.top_rated.ResultDto
 import com.example.moviesappbootcamp.data.remote.dto.top_rated.TopRatedResponseDto
@@ -21,6 +22,8 @@ interface RemoteSource {
     suspend fun getSingleMovie(movieId : Int) : Flow<NetworkState<SingleMovieResponseDto>>
 
     suspend fun getRecommendedMovies(movieId: Int) : Flow<NetworkState<TopRatedResponseDto>>
+
+    suspend fun getReviews(movieId: Int) : Flow<NetworkState<ReviewsResponseDto>>
 
     suspend fun getMovieCredits(movieId : Int) : Flow<NetworkState<CreditsResponseDto>>
     suspend fun getTopRatedMovies(movieType: MovieType) : Flow<NetworkState<NetworkTopRatedMovieModelWithType>>

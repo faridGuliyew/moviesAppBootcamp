@@ -7,6 +7,7 @@ import com.example.moviesappbootcamp.domain.model.CreditsUiModel
 import com.example.moviesappbootcamp.domain.model.MovieBriefUiModel
 import com.example.moviesappbootcamp.domain.model.MovieDetailedUiModel
 import com.example.moviesappbootcamp.domain.model.MovieModelWithType
+import com.example.moviesappbootcamp.domain.model.ReviewUiModel
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
@@ -20,6 +21,8 @@ interface MovieRepository {
     suspend fun getRecommendedMovies(movieId: Int) : Flow<Resource<List<MovieBriefUiModel>>>
 
     suspend fun getMovieCredits(movieId : Int) : Flow<Resource<List<CreditsUiModel>?>>
+
+    suspend fun getReviews(movieId: Int) : Flow<Resource<List<ReviewUiModel>>>
 
     suspend fun searchMovies(query : String) : Flow<PagingData<MovieBriefUiModel>>
 }

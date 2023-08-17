@@ -15,3 +15,13 @@ fun ratingToText(textView: TextView, rating : Double?) {
     val textToDisplay = if (rating!=null) "$rating.0".slice(0..2) else "not rated"
     textView.text = textToDisplay
 }
+
+@BindingAdapter("custom-dateToReadableText")
+fun dateToReadableText(textView: TextView, date : String){
+    val sliced = date.split("-")
+    if (sliced.isNotEmpty()){
+        textView.text =  sliced[0]
+    }else{
+        textView.text = date
+    }
+}

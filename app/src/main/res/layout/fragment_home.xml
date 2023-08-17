@@ -2,8 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@color/mainBackground"
     tools:context=".presentation.mainScreens.homeFragment.HomeFragment">
 
@@ -77,9 +79,9 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button2"
         style="@style/Widget.Material3.Button.IconButton"
-        android:contentDescription="notificationBell"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="notificationBell"
         app:icon="@drawable/ic_notification_bell"
         app:iconTint="@color/white"
         app:layout_constraintEnd_toStartOf="@+id/guideline13"
@@ -89,9 +91,9 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonSearch"
         style="@style/Widget.Material3.Button.IconButton"
-        android:contentDescription="search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="search"
         app:icon="@drawable/ic_search"
         app:iconTint="@color/white"
         app:layout_constraintEnd_toStartOf="@+id/button2"

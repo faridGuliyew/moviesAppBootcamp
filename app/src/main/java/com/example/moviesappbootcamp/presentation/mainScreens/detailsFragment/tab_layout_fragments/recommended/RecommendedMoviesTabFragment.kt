@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.moviesappbootcamp.R
 import com.example.moviesappbootcamp.base.BaseFragment
 import com.example.moviesappbootcamp.common.utils.fancyToast
@@ -53,6 +55,7 @@ class RecommendedMoviesTabFragment (private val id : Int) : BaseFragment<Fragmen
 
     private fun setRv(){
         val rv = binding.rvMovies
+        //rv.layoutManager = object : GridLayoutManager(context,2) { override fun canScrollVertically() = false }
         rv.adapter = moviesAdapter
     }
 

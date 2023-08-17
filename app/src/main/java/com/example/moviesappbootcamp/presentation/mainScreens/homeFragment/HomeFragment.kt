@@ -39,20 +39,21 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         val loadingDialog =
             CustomLoadingDialog(requireContext(), layoutInflater, "Please wait...", true)
         with(viewModel) {
-            result.observe(viewLifecycleOwner){
-                when(it){
-                    is UiState.Loading-> loadingDialog.show()
+            result.observe(viewLifecycleOwner) {
+                when (it) {
+                    is UiState.Loading -> loadingDialog.show()
                     is UiState.Error -> {
                         loadingDialog.dismiss()
-                        fancyToast(requireContext(),it.message,FancyToast.ERROR)
+                        fancyToast(requireContext(), it.message, FancyToast.ERROR)
                     }
+
                     is UiState.Success -> {
                         loadingDialog.dismiss()
                         val data = it.data.movieBriefUiModels
-                        when(it.data.movieType){
-                            is MovieType.TOP_RATED->topTenAdapter.updateAdapter(data)
-                            is MovieType.POPULAR->viewPagerAdapter.updateAdapter(data)
-                            is MovieType.RECENT->newReleasesAdapter.updateAdapter(data)
+                        when (it.data.movieType) {
+                            is MovieType.TOP_RATED -> topTenAdapter.updateAdapter(data)
+                            is MovieType.POPULAR -> viewPagerAdapter.updateAdapter(data)
+                            is MovieType.RECENT -> newReleasesAdapter.updateAdapter(data)
                             is MovieType.NOW_PLAYING -> recommendedAdapter.updateAdapter(data)
                         }
                     }
@@ -61,31 +62,27 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         }
     }
 
-    //4 saatımı aldı :)
     private fun setMotionAnimation() {
         val viewPager = binding.topMoviesViewPager
         val scrollView = binding.scrollView
-
-        val params = viewPager.layoutParams
-        //View Pager will cover 40% of the screen
-        val initialHeight = Resources.getSystem().displayMetrics.heightPixels * 0.4
+        val container = binding.container
+        val initialChildCount = container.childCount
         scrollView.viewTreeObserver.addOnScrollChangedListener {
+            val scrollHeight = scrollView.height
             val movement = scrollView.scrollY.toFloat()
-            val percentage = (movement / initialHeight).toFloat()
-            val newHeight = initialHeight * (1-percentage)
-            viewPager.alpha = (1 - 2 * percentage)
-            binding.imageView6.alpha = (1 - 3 * percentage)
-            binding.fakeToolbar.alpha = (1.5 * percentage).toFloat()
-            binding.textView10.alpha = (1.5 * percentage).toFloat()
-            params.height = newHeight.toInt()
-            viewPager.requestLayout()
+            if (movement >= scrollHeight / 2 && container.childCount == initialChildCount){
+                container.removeView(viewPager)
+            }
+            if (movement == 0f && container.childCount != initialChildCount){
+                container.addView(viewPager)
+            }
         }
     }
 
-    private fun setRv(){
-        rvSetup(binding.rvTopTenPopular,topTenAdapter,MovieType.TOP_RATED)
-        rvSetup(binding.rvNewReleases,newReleasesAdapter,MovieType.RECENT)
-        rvSetup(binding.rvRecommended,recommendedAdapter,MovieType.NOW_PLAYING)
+    private fun setRv() {
+        rvSetup(binding.rvTopTenPopular, topTenAdapter, MovieType.TOP_RATED, binding.buttonPopularSeeAll)
+        rvSetup(binding.rvNewReleases, newReleasesAdapter, MovieType.RECENT, binding.buttonRecentSeeAll)
+        rvSetup(binding.rvRecommended, recommendedAdapter, MovieType.NOW_PLAYING, binding.buttonRecommendedSeeAll)
     }
 
     private fun setViewPager() {
@@ -94,30 +91,38 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
         val transformer = CompositePageTransformer()
         transformer.addTransformer { page, position ->
-            page.scaleX = abs(1 - 0.85*position).toFloat()
-            page.scaleY = abs(1 - 0.85*position).toFloat()
+            page.scaleX = abs(1 - 0.85 * position).toFloat()
+            page.scaleY = abs(1 - 0.85 * position).toFloat()
         }
         viewPager.setPageTransformer(transformer)
     }
 
-    private fun goToExplore(){
+    private fun goToExplore() {
         binding.buttonSearch.setOnClickListener {
             findNavController().navigate(HomeFragmentDirections.actionHomeFragment2ToExploreFragment())
         }
     }
 
     /*Setup*/
-    private fun seeAllSetup(button : Button, movieType: MovieType){
+    private fun seeAllSetup(button: Button, movieType: MovieType) {
         button.setOnClickListener {
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragment2ToSeeAllFragment(movieType))
+            findNavController().navigate(
+                HomeFragmentDirections.actionHomeFragment2ToSeeAllFragment(
+                    movieType
+                )
+            )
         }
     }
 
-    private fun rvSetup(rv : RecyclerView, adapter : MovieSmallAdapter, movieType: MovieType){
+    private fun rvSetup(rv: RecyclerView, adapter: MovieSmallAdapter, movieType: MovieType, seeAllButton : Button) {
         rv.adapter = adapter
-        adapter.setOnClickEvent { id->
-            findNavController().navigate(HomeFragmentDirections.actionHomeFragment2ToDetailsFragment(id))
+        adapter.setOnClickEvent { id ->
+            findNavController().navigate(
+                HomeFragmentDirections.actionHomeFragment2ToDetailsFragment(
+                    id
+                )
+            )
         }
-        seeAllSetup(binding.buttonPopularSeeAll,movieType)
+        seeAllSetup(seeAllButton, movieType)
     }
 }

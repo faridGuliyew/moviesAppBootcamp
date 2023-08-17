@@ -11,6 +11,7 @@ import com.example.moviesappbootcamp.domain.use_case.GetMovieCreditsUseCase
 import com.example.moviesappbootcamp.domain.use_case.GetSingleMovieUseCase
 import com.example.moviesappbootcamp.presentation.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,7 +28,7 @@ class DetailsViewModel @Inject constructor(
 
     fun getSingleMovie(movieId : Int){
         viewModelScope.launch {
-            getSingleMovieUseCase(movieId).collect{
+            getSingleMovieUseCase(movieId).collectLatest{
                 when(it){
                     is Resource.Loading-> _uiState.value = DetailsUiState.Loading("Movie details are loading...")
                     is Resource.Error-> _uiState.value = DetailsUiState.Error(it.message)
@@ -43,7 +44,7 @@ class DetailsViewModel @Inject constructor(
 
     private fun getMovieCredits(movieId: Int){
         viewModelScope.launch {
-            getMovieCreditsUseCase.invoke(movieId).collect{
+            getMovieCreditsUseCase(movieId).collectLatest{
                 when(it){
                     is Resource.Loading-> _uiState.value = DetailsUiState.Loading("Cast and Crew members are loading")
                     is Resource.Error-> _uiState.value = DetailsUiState.Error(it.message)

@@ -3,21 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/mainBackground"
     tools:context=".presentation.mainScreens.detailsFragment.tab_layout_fragments.recommended.RecommendedMoviesTabFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMovies"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
         android:orientation="vertical"
-        tools:listitem="@layout/item_movie_big"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:spanCount="2"
+        tools:listitem="@layout/item_movie_big" />
 
     <ProgressBar
         android:id="@+id/progressBar"

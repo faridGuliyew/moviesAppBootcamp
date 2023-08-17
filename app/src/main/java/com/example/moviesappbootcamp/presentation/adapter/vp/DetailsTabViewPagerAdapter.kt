@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.moviesappbootcamp.presentation.mainScreens.detailsFragment.tab_layout_fragments.recommended.RecommendedMoviesTabFragment
+import com.example.moviesappbootcamp.presentation.mainScreens.detailsFragment.tab_layout_fragments.reviews.ReviewsFragment
 
 class DetailsTabViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle, private val id : Int) : FragmentStateAdapter(fragmentManager,lifecycle) {
     override fun getItemCount(): Int {
@@ -14,6 +15,8 @@ class DetailsTabViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Li
     override fun createFragment(position: Int): Fragment {
         return when(position){
             0-> RecommendedMoviesTabFragment(id)
+            //1->TrailersTabFragment(id)
+            2-> ReviewsFragment(id)
             else -> Fragment()
         }
     }

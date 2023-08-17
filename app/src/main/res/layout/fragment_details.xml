@@ -11,8 +11,10 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:background="@color/mainBackground"
         tools:context=".presentation.mainScreens.detailsFragment.DetailsFragment">
 
@@ -25,24 +27,36 @@
 
         <ImageView
             android:id="@+id/imageViewBackdrop"
+            custom-loadImageWithGlide="@{movie.movieBackdrop}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:adjustViewBounds="true"
+            android:animateLayoutChanges="true"
             android:scaleType="centerCrop"
-            custom-loadImageWithGlide="@{movie.movieBackdrop}"
-            tools:src="@drawable/demo2"
             app:layout_constraintBottom_toTopOf="@+id/guideline25"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/demo2" />
+
+        <View
+            android:id="@+id/view6"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/shadow_bottom"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewBackdrop"
+            app:layout_constraintEnd_toEndOf="@+id/imageViewBackdrop"
+            app:layout_constraintStart_toStartOf="@+id/imageViewBackdrop"
+            app:layout_constraintTop_toTopOf="@+id/imageViewBackdrop" />
 
         <ScrollView
-            android:layout_width="391dp"
-            android:layout_height="426dp"
+            android:id="@+id/scrollView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline25">
+            app:layout_constraintTop_toBottomOf="@+id/imageViewBackdrop">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -64,13 +78,13 @@
                     android:fontFamily="@font/rubik"
                     android:maxLines="2"
                     android:text="@{movie.movieName}"
-                    tools:text="Movie title: Will be here soon"
                     android:textColor="#FFFFFF"
                     android:textSize="24sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toStartOf="@+id/buttonSave"
                     app:layout_constraintStart_toStartOf="@+id/guidelineLeft"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Movie title: Will be here soon" />
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guidelineRight"
@@ -105,17 +119,17 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/buttonRating"
                     style="@style/Widget.Material3.Button.IconButton"
+                    custom-ratingToText="@{movie.movieRating}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto"
-                    custom-ratingToText="@{movie.movieRating}"
-                    tools:text="9.8"
                     android:textColor="#D50000"
                     app:icon="@drawable/ic_rating"
                     app:iconPadding="6dp"
                     app:iconTint="@null"
                     app:layout_constraintStart_toStartOf="@+id/guidelineLeft"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewMovieTitle" />
+                    app:layout_constraintTop_toBottomOf="@+id/textViewMovieTitle"
+                    tools:text="9.8" />
 
                 <TextView
                     android:id="@+id/textViewDate"
@@ -123,13 +137,13 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-smallcaps"
                     android:text="@{String.valueOf(movie.movieReleaseYear)}"
-                    tools:text="2022"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/buttonMore"
                     app:layout_constraintStart_toEndOf="@+id/buttonMore"
-                    app:layout_constraintTop_toTopOf="@+id/buttonMore" />
+                    app:layout_constraintTop_toTopOf="@+id/buttonMore"
+                    tools:text="2022" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/buttonMore"
@@ -241,24 +255,23 @@
                     <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Monday" />
+                        android:text="See also" />
 
                     <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Tuesday" />
+                        android:text="Trailers" />
 
                     <com.google.android.material.tabs.TabItem
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Wednesday" />
+                        android:text="Comments" />
                 </com.google.android.material.tabs.TabLayout>
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/tabViewPager"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/guidelineLeft"

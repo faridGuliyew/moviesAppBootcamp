@@ -1,5 +1,7 @@
 package com.example.moviesappbootcamp.data.mapper
 
+import com.example.moviesappbootcamp.common.model.other.ChipFilter
+import com.example.moviesappbootcamp.common.filter.GenreFilter
 import com.example.moviesappbootcamp.data.remote.dto.top_rated.ResultDto
 import com.example.moviesappbootcamp.domain.model.MovieBriefUiModel
 import com.example.moviesappbootcamp.domain.model.MovieDetailedUiModel
@@ -8,8 +10,11 @@ import com.example.moviesappbootcamp.data.remote.dto.credits.Cast
 import com.example.moviesappbootcamp.data.remote.dto.credits.Crew
 import com.example.moviesappbootcamp.data.remote.dto.reviews.ReviewsResponseDto
 import com.example.moviesappbootcamp.data.remote.dto.single.SingleMovieResponseDto
+import com.example.moviesappbootcamp.data.remote.dto.upcoming.UpcomingResultDto
+import com.example.moviesappbootcamp.data.remote.dto.videos.VideosResponseDto
 import com.example.moviesappbootcamp.domain.model.CreditsUiModel
 import com.example.moviesappbootcamp.domain.model.ReviewUiModel
+import com.example.moviesappbootcamp.domain.model.TrailerUiModel
 
 
 fun List<ResultDto>.toBriefUiModels(): List<MovieBriefUiModel> {
@@ -47,19 +52,18 @@ fun SingleMovieResponseDto.toDetailedUiModel(): MovieDetailedUiModel {
         movieRating = voteAverage,
         voteCount = voteCount,
         movieReleaseYear = releaseDateToYear(releaseDate),
-        movieGenres = genres
+        movieGenres = genres.map { genre-> ChipFilter.Genre(GenreFilter.findGenreById(genre.id)) }
     )
 }
 
-//@JvmName
-//todo
-fun List<com.example.moviesappbootcamp.data.remote.dto.upcoming.ResultDto>.toBrieffUiModels(): List<MovieBriefUiModel> {
+
+fun List<UpcomingResultDto>.toBrieffUiModels(): List<MovieBriefUiModel> {
     return map { dto ->
         dto.toBriefUiModel()
     }
 }
 
-fun com.example.moviesappbootcamp.data.remote.dto.upcoming.ResultDto.toBriefUiModel(): MovieBriefUiModel {
+fun UpcomingResultDto.toBriefUiModel(): MovieBriefUiModel {
     return MovieBriefUiModel(
         movieId = id,
         movieName = title,
@@ -98,4 +102,17 @@ fun ReviewsResponseDto.toReviewUiModels() : List<ReviewUiModel>{
             date = reviewResult.createdAt
         )
     }
+}
+
+fun VideosResponseDto.toTrailerUiModels() : List<TrailerUiModel>{
+
+    return this.videoResults.map { result->
+        TrailerUiModel(
+            id = result.id,
+            key = result.key,
+            name = result.name,
+            site = result.site
+        )
+    }
+
 }

@@ -4,12 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moviesappbootcamp.common.model.Resource
-import com.example.moviesappbootcamp.domain.model.MovieBriefUiModel
-import com.example.moviesappbootcamp.domain.model.MovieDetailedUiModel
+import com.example.moviesappbootcamp.common.model.data.Resource
 import com.example.moviesappbootcamp.domain.use_case.GetMovieCreditsUseCase
 import com.example.moviesappbootcamp.domain.use_case.GetSingleMovieUseCase
-import com.example.moviesappbootcamp.presentation.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -34,7 +31,7 @@ class DetailsViewModel @Inject constructor(
                     is Resource.Error-> _uiState.value = DetailsUiState.Error(it.message)
                     is Resource.Success-> {
                         val data = it.data
-                        _uiState.value = if (data!=null) DetailsUiState.Success(data, DetailsDataType.MOVIE_DETAILS) else DetailsUiState.Unavailable("Movie does not exist in our database")
+                        _uiState.value = if (data!=null) DetailsUiState.SuccessDetails(data) else DetailsUiState.Unavailable("Movie does not exist in our database")
                         getMovieCredits(movieId)
                     }
                 }
@@ -50,7 +47,7 @@ class DetailsViewModel @Inject constructor(
                     is Resource.Error-> _uiState.value = DetailsUiState.Error(it.message)
                     is Resource.Success-> {
                         val data = it.data
-                        _uiState.value = if (data!=null) DetailsUiState.Success(data, DetailsDataType.CREDITS) else DetailsUiState.Unavailable("Credits for this movies does not exist in our database")
+                        _uiState.value = if (data!=null) DetailsUiState.SuccessCredits(data) else DetailsUiState.Unavailable("Credits for this movies does not exist in our database")
                     }
                 }
             }

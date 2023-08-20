@@ -5,7 +5,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.moviesappbootcamp.base.BaseFragment
-import com.example.moviesappbootcamp.common.model.Resource
+import com.example.moviesappbootcamp.common.model.data.Resource
 import com.example.moviesappbootcamp.databinding.FragmentSeeAllBinding
 import com.example.moviesappbootcamp.presentation.adapter.rv.MovieBigAdapter
 import com.example.moviesappbootcamp.presentation.custom.CustomLoadingDialog

@@ -8,7 +8,7 @@
 
         <variable
             name="filter"
-            type="com.example.moviesappbootcamp.common.ChipFilter" />
+            type="com.example.moviesappbootcamp.common.model.other.ChipFilter" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

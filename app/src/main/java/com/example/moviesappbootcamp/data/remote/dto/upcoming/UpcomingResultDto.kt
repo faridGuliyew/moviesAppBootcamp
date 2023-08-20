@@ -1,10 +1,9 @@
 package com.example.moviesappbootcamp.data.remote.dto.upcoming
 
 
-import com.example.moviesappbootcamp.domain.model.MovieBriefUiModel
 import com.google.gson.annotations.SerializedName
 
-data class ResultDto(
+data class UpcomingResultDto(
     @SerializedName("adult")
     val adult: Boolean,
     @SerializedName("backdrop_path")

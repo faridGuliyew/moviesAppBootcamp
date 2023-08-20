@@ -48,5 +48,52 @@
         <argument
             android:name="movieId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_detailsFragment_to_giveRatingFragment"
+            app:destination="@id/giveRatingFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.moviesappbootcamp.presentation.mainScreens.profileFragment.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_paymentFragment"
+            app:destination="@id/paymentFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left" />
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/paymentFragment"
+        android:name="com.example.moviesappbootcamp.presentation.mainScreens.paymentFragment.PaymentFragment"
+        android:label="fragment_payment"
+        tools:layout="@layout/fragment_payment" >
+        <action
+            android:id="@+id/action_paymentFragment_to_addCardFragment"
+            app:destination="@id/addCardFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/addCardFragment"
+        android:name="com.example.moviesappbootcamp.presentation.mainScreens.addCardFragment.AddCardFragment"
+        android:label="AddCardFragment" />
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.example.moviesappbootcamp.presentation.mainScreens.profileFragment.preferences.editProfileFragment.EditProfileFragment"
+        android:label="EditProfileFragment" />
+    <dialog
+        android:id="@+id/giveRatingFragment"
+        android:name="com.example.moviesappbootcamp.presentation.mainScreens.detailsFragment.giveRatingFragment.GiveRatingFragment"
+        android:label="GiveRatingFragment" >
+        <argument
+            android:name="movie"
+            app:argType="com.example.moviesappbootcamp.domain.model.MovieDetailedUiModel" />
+    </dialog>
 </navigation>

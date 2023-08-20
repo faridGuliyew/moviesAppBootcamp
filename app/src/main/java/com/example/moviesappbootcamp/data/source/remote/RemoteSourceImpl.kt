@@ -4,19 +4,13 @@ import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import com.example.moviesappbootcamp.common.MovieType
-import com.example.moviesappbootcamp.common.model.NetworkState
-import com.example.moviesappbootcamp.common.model.Resource
+import com.example.moviesappbootcamp.common.model.data.NetworkState
 import com.example.moviesappbootcamp.data.remote.MovieApi
 import com.example.moviesappbootcamp.data.MoviePagingSource
-import com.example.moviesappbootcamp.data.mapper.toBriefUiModel
-import com.example.moviesappbootcamp.data.remote.dto.credits.CreditsResponseDto
-import com.example.moviesappbootcamp.data.remote.dto.reviews.ReviewsResponseDto
-import com.example.moviesappbootcamp.data.remote.dto.top_rated.TopRatedResponseDto
-import com.example.moviesappbootcamp.domain.model.MovieModelWithType
+import com.example.moviesappbootcamp.data.remote.dto.videos.VideosResponseDto
 import com.example.moviesappbootcamp.domain.model.NetworkTopRatedMovieModelWithType
 import com.example.moviesappbootcamp.domain.model.NetworkUpcomingMovieModelWithType
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -44,74 +38,83 @@ class RemoteSourceImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    //todo
-    override suspend fun getSingleMovie(movieId: Int) = flow {
+    override suspend fun getSingleMovie(movieId: Int) =
         try {
             val response = movieApi.getSingleMovie(movieId)
-            emit(NetworkState.Success(response.body()))
+            NetworkState.Success(response.body())
         } catch (e: Exception) {
-            emit(NetworkState.Error(e.localizedMessage?:"Unexpected error occurred."))
+            NetworkState.Error(e.localizedMessage ?: "Unexpected error occurred.")
         }
-    }.flowOn(Dispatchers.IO)
 
-    override suspend fun getRecommendedMovies(movieId: Int) = flow {
+
+    override suspend fun getRecommendedMovies(movieId: Int) =
         try {
             val response = movieApi.getRecommendedMovies(movieId).body()
-            emit(NetworkState.Success(response))
-        }catch (e:Exception){
-            emit(NetworkState.Error(e.localizedMessage?:"Unexpected error occurred."))
+            NetworkState.Success(response)
+        } catch (e: Exception) {
+            NetworkState.Error(e.localizedMessage ?: "Unexpected error occurred.")
         }
-    }.flowOn(Dispatchers.IO)
 
-    override suspend fun getReviews(movieId: Int) = flow {
+
+    override suspend fun getReviews(movieId: Int) =
         try {
             val response = movieApi.getReviews(movieId).body()
-            emit(NetworkState.Success(response))
-        }catch (e:Exception){
-            emit(NetworkState.Error(e.localizedMessage?:"Unexpected error occurred"))
+            NetworkState.Success(response)
+        } catch (e: Exception) {
+            NetworkState.Error(e.localizedMessage ?: "Unexpected error occurred")
         }
-    }.flowOn(Dispatchers.IO)
 
-    override suspend fun getMovieCredits(movieId: Int) = flow {
+    override suspend fun getVideos(movieId: Int): NetworkState<VideosResponseDto> {
+        return try {
+            val response = movieApi.getMovieVideos(movieId).body()
+            NetworkState.Success(response)
+        }catch (e:Exception){
+            NetworkState.Error(e.localizedMessage?:"Unexpected error occurred")
+        }
+    }
+
+
+    override suspend fun getMovieCredits(movieId: Int) =
         try {
             val response = movieApi.getMovieCredits(movieId)
-            emit(NetworkState.Success(response.body()))
-        }catch (e:Exception){
-            emit(NetworkState.Error(e.localizedMessage?:"Unexpected error occurred."))
+            NetworkState.Success(response.body())
+        } catch (e: Exception) {
+            NetworkState.Error(e.localizedMessage ?: "Unexpected error occurred.")
         }
-    }.flowOn(Dispatchers.IO)
+
 
     override suspend fun getTopRatedMovies(movieType: MovieType) =
-        flow {
-            try {
-                val request = movieApi.getTopRatedMovies(movieType.query)
-                emit(
-                    NetworkState.Success(
-                        NetworkTopRatedMovieModelWithType(
-                            movieType,
-                            request.body()
-                        )
-                    )
+
+        try {
+            val request = movieApi.getTopRatedMovies(movieType.query)
+
+            NetworkState.Success(
+                NetworkTopRatedMovieModelWithType(
+                    movieType,
+                    request.body()
                 )
-            } catch (e: Exception) {
-                emit(NetworkState.Error(e.localizedMessage?:"Unexpected error occurred."))
-            }
-        }.flowOn(Dispatchers.IO)
+
+            )
+        } catch (e: Exception) {
+            NetworkState.Error(e.localizedMessage ?: "Unexpected error occurred.")
+        }
+
 
     override suspend fun getUpcomingMovies(movieType: MovieType) =
-        flow {
-            try {
-                val response = movieApi.getRecentMovies(movieType.query)
-                emit(
-                    NetworkState.Success(
-                        NetworkUpcomingMovieModelWithType(
-                            movieType,
-                            response.body()
-                        )
-                    )
+
+        try {
+            val response = movieApi.getRecentMovies(movieType.query)
+
+            NetworkState.Success(
+                NetworkUpcomingMovieModelWithType(
+                    movieType,
+                    response.body()
                 )
-            } catch (e: Exception) {
-                emit(NetworkState.Error(e.localizedMessage?:"Unexpected error occurred."))
-            }
-        }.flowOn(Dispatchers.IO)
+            )
+
+        } catch (e: Exception) {
+            NetworkState.Error(e.localizedMessage ?: "Unexpected error occurred.")
+        }
+
 }
+

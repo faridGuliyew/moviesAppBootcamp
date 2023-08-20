@@ -1,7 +1,7 @@
 package com.example.moviesappbootcamp.presentation.mainScreens.filterFragment
 
 import com.example.moviesappbootcamp.base.BottomSheetBaseFragment
-import com.example.moviesappbootcamp.common.ChipFilter
+import com.example.moviesappbootcamp.common.model.other.ChipFilter
 import com.example.moviesappbootcamp.common.filter.CategoryFilter
 import com.example.moviesappbootcamp.common.filter.GenreFilter
 import com.example.moviesappbootcamp.common.filter.RegionFilter

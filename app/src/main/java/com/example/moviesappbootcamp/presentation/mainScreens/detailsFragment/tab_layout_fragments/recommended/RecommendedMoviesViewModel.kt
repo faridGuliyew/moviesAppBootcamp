@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moviesappbootcamp.common.model.Resource
+import com.example.moviesappbootcamp.common.model.data.Resource
 import com.example.moviesappbootcamp.domain.model.MovieBriefUiModel
 import com.example.moviesappbootcamp.domain.use_case.GetRecommendedMoviesUseCase
 import com.example.moviesappbootcamp.presentation.UiState

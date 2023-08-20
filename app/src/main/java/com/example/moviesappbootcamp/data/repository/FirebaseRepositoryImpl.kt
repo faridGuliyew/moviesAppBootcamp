@@ -1,6 +1,6 @@
 package com.example.moviesappbootcamp.data.repository
 
-import com.example.moviesappbootcamp.common.model.Resource
+import com.example.moviesappbootcamp.common.model.data.Resource
 import com.example.moviesappbootcamp.domain.repository.FirebaseRepository
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow

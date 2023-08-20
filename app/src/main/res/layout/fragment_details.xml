@@ -29,25 +29,15 @@
             android:id="@+id/imageViewBackdrop"
             custom-loadImageWithGlide="@{movie.movieBackdrop}"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="250dp"
             android:adjustViewBounds="true"
             android:animateLayoutChanges="true"
             android:scaleType="centerCrop"
-            app:layout_constraintBottom_toTopOf="@+id/guideline25"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/demo2" />
-
-        <View
-            android:id="@+id/view6"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@drawable/shadow_bottom"
-            app:layout_constraintBottom_toBottomOf="@+id/imageViewBackdrop"
-            app:layout_constraintEnd_toEndOf="@+id/imageViewBackdrop"
-            app:layout_constraintStart_toStartOf="@+id/imageViewBackdrop"
-            app:layout_constraintTop_toTopOf="@+id/imageViewBackdrop" />
 
         <ScrollView
             android:id="@+id/scrollView"

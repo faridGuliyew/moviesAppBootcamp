@@ -8,7 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.moviesappbootcamp.base.BaseFragment
-import com.example.moviesappbootcamp.common.model.Resource
+import com.example.moviesappbootcamp.common.model.data.Resource
 import com.example.moviesappbootcamp.databinding.FragmentSignInBinding
 import com.example.moviesappbootcamp.presentation.custom.CustomLoadingDialog
 import com.example.moviesappbootcamp.common.utils.fancyToast

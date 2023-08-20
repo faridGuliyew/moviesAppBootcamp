@@ -57,4 +57,8 @@ class ReviewsFragment (private val id : Int) : BaseFragment<FragmentReviewsBindi
         rv.adapter = reviewAdapter
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.root.requestLayout()
+    }
 }

@@ -59,4 +59,9 @@ class RecommendedMoviesTabFragment (private val id : Int) : BaseFragment<Fragmen
         rv.adapter = moviesAdapter
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.root.requestLayout()
+    }
+
 }

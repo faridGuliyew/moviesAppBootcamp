@@ -1,8 +1,10 @@
 package com.example.moviesappbootcamp.common.filter
 
-import com.example.moviesappbootcamp.common.ChipFilter
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-sealed class GenreFilter (val displayName : String, val code : Int){
+@Parcelize
+sealed class GenreFilter (val displayName : String, val code : Int) : Parcelable{
     object Action : GenreFilter("Action", 28)
     object Adventure : GenreFilter("Adventure", 12)
     object Animation : GenreFilter("Animation", 16)

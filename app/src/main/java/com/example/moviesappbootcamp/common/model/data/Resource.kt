@@ -1,4 +1,4 @@
-package com.example.moviesappbootcamp.common.model
+package com.example.moviesappbootcamp.common.model.data
 
 sealed class Resource <out T>{
     data class Success <out T> (val data : T) : Resource<T>()

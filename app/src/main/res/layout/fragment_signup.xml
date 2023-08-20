@@ -138,7 +138,7 @@
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:startIconDrawable="@drawable/ic_mail"
-        app:startIconTint="@drawable/edit_text_icon_color_selector"
+        app:startIconTint="@color/edit_text_icon_color_selector"
         >
 
         <com.google.android.material.textfield.TextInputEditText
@@ -165,8 +165,8 @@
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
         app:startIconDrawable="@drawable/ic_lock"
-        app:startIconTint="@drawable/edit_text_icon_color_selector"
-        app:endIconTint="@drawable/edit_text_icon_color_selector"
+        app:startIconTint="@color/edit_text_icon_color_selector"
+        app:endIconTint="@color/edit_text_icon_color_selector"
         >
 
         <com.google.android.material.textfield.TextInputEditText

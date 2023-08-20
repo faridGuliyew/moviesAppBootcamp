@@ -62,7 +62,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
         }
     }
 
-    private fun setMotionAnimation() {
+    /*private fun setMotionAnimation() {
         val viewPager = binding.topMoviesViewPager
         val scrollView = binding.scrollView
         val container = binding.container
@@ -75,6 +75,27 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
             }
             if (movement == 0f && container.childCount != initialChildCount){
                 container.addView(viewPager)
+            }
+        }
+    }*/
+
+
+
+
+    private fun setMotionAnimation() {
+        with(binding.topMoviesViewPager){
+            val params = layoutParams
+            val initialHeight = Resources.getSystem().displayMetrics.heightPixels * 0.4
+            binding.scrollView.viewTreeObserver.addOnScrollChangedListener {
+                val movement = binding.scrollView.scrollY.toFloat()
+                val percentage = (movement / initialHeight).toFloat()
+                val newHeight = initialHeight * (1-percentage)
+                alpha = (1 - 2 * percentage)
+                binding.imageView6.alpha = (1 - 3 * percentage)
+                binding.fakeToolbar.alpha = (1.5 * percentage).toFloat()
+                binding.textView10.alpha = (1.5 * percentage).toFloat()
+                params.height = newHeight.toInt()
+                requestLayout()
             }
         }
     }

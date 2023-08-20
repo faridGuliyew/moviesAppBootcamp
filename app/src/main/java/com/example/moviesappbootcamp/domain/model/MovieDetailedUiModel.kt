@@ -1,7 +1,10 @@
 package com.example.moviesappbootcamp.domain.model
 
-import com.example.moviesappbootcamp.data.remote.dto.single.Genre
+import android.os.Parcelable
+import com.example.moviesappbootcamp.common.model.other.ChipFilter
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class MovieDetailedUiModel (
     val movieId : Int? = 0,
     val movieName : String? = "Unknown",
@@ -11,5 +14,5 @@ data class MovieDetailedUiModel (
     val movieRating : Double? = 0.0,
     val voteCount : Int = 0,
     val movieReleaseYear : Int = 1990,
-    val movieGenres : List<Genre> = emptyList()
-)
+    val movieGenres : List<ChipFilter> = emptyList()
+) : Parcelable

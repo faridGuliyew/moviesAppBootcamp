@@ -1,15 +1,13 @@
 package com.example.moviesappbootcamp.presentation.mainScreens.detailsFragment
 
 import android.content.Intent
-import android.content.res.Resources
-import android.util.Log
-import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.moviesappbootcamp.base.BaseFragment
-import com.example.moviesappbootcamp.common.ChipFilter
-import com.example.moviesappbootcamp.common.filter.GenreFilter
 import com.example.moviesappbootcamp.common.utils.fancyToast
+import com.example.moviesappbootcamp.common.utils.gone
+import com.example.moviesappbootcamp.common.utils.visible
 import com.example.moviesappbootcamp.databinding.FragmentDetailsBinding
 import com.example.moviesappbootcamp.domain.model.CreditsUiModel
 import com.example.moviesappbootcamp.domain.model.MovieDetailedUiModel
@@ -36,78 +34,91 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
         setGenresRv()
         setViewPager()
         share()
-        //setMotionAnimation()
+        setMotionAnimation()
         observe()
     }
 
-    private fun observe(){
+    private fun observe() {
         viewModel.getSingleMovie(args.movieId)
-        val loadingDialog = CustomLoadingDialog(requireContext(),layoutInflater,"Please wait...")
-        with(viewModel){
-            uiState.observe(viewLifecycleOwner){
-                when(it){
-                    is DetailsUiState.Loading->loadingDialog.setDialogText(it.message)
-                    is DetailsUiState.Error->{
+        val loadingDialog = CustomLoadingDialog(requireContext(), layoutInflater, "Please wait...")
+        with(viewModel) {
+            uiState.observe(viewLifecycleOwner) {
+                when (it) {
+                    is DetailsUiState.Loading -> loadingDialog.setDialogText(it.message)
+                    is DetailsUiState.Error -> {
                         loadingDialog.dismiss()
-                        fancyToast(requireContext(),it.message,FancyToast.ERROR)
+                        fancyToast(requireContext(), it.message, FancyToast.ERROR)
                     }
-                    is DetailsUiState.Unavailable->{
+
+                    is DetailsUiState.Unavailable -> {
                         loadingDialog.dismiss()
-                        fancyToast(requireContext(),it.message,FancyToast.INFO)
+                        fancyToast(requireContext(), it.message, FancyToast.INFO)
                     }
-                    is DetailsUiState.Success->{
+
+                    is DetailsUiState.SuccessCredits -> {
                         loadingDialog.dismiss()
-                        if (it.type == DetailsDataType.MOVIE_DETAILS){
-                            binding.movie = it.data as MovieDetailedUiModel
-                            //todo
-                            genresAdapter.updateAdapter(it.data.movieGenres.map { genre-> ChipFilter.Genre(GenreFilter.findGenreById(genre.id)) })
-                        }else{
-                            creditsAdapter.differ.submitList(it.data as List<CreditsUiModel>)
-                        }
+                        creditsAdapter.differ.submitList(it.data as List<CreditsUiModel>)
+                    }
+
+                    is DetailsUiState.SuccessDetails -> {
+                        loadingDialog.dismiss()
+                        binding.movie = it.data as MovieDetailedUiModel
+                        genresAdapter.updateAdapter(it.data.movieGenres)
+                        showRating(it.data)
                     }
                 }
             }
         }
     }
 
-    private fun setCreditsRv(){
+    private fun setCreditsRv() {
         val rv = binding.rvPeople
         rv.adapter = creditsAdapter
     }
 
-    private fun setGenresRv(){
+    private fun setGenresRv() {
         val rv = binding.genresRv
         rv.adapter = genresAdapter
     }
 
-    private fun setViewPager(){
+    private fun setViewPager() {
         val viewPager = binding.tabViewPager
-        viewPager.adapter = DetailsTabViewPagerAdapter(childFragmentManager, lifecycle, args.movieId)
+        viewPager.adapter =
+            DetailsTabViewPagerAdapter(childFragmentManager, lifecycle, args.movieId)
         val tabTitles = listOf("More like this", "Trailers", "Comments")
-        TabLayoutMediator(binding.tabLayout,viewPager){ tab, position->
+        TabLayoutMediator(binding.tabLayout, viewPager) { tab, position ->
             tab.text = tabTitles[position]
         }.attach()
     }
 
-    //todo
     private fun setMotionAnimation() {
-        val image = binding.imageViewBackdrop
-        val scrollView = binding.scrollView
-        val container = binding.container
-        val initialChildCount = container.childCount
-        scrollView.viewTreeObserver.addOnScrollChangedListener {
-            val scrollHeight = scrollView.height
-            val movement = scrollView.scrollY.toFloat()
-            if (movement >= scrollHeight / 2 && container.childCount == initialChildCount){
-                container.removeView(image)
-            }
-            if (movement == 0f && container.childCount != initialChildCount){
-                container.addView(image)
+        var justSwitched = 0
+        with(binding.imageViewBackdrop) {
+            binding.scrollView.viewTreeObserver.addOnScrollChangedListener {
+                val movement = binding.scrollView.scrollY.toFloat()
+                if (movement == 0f && justSwitched >= 6) {
+                    visible()
+                } else if (movement != 0f && justSwitched >= 10) {
+                    gone()
+                    justSwitched = 1
+                }
+                justSwitched++
+
             }
         }
     }
 
-    private fun share(){
+    private fun showRating(movie: MovieDetailedUiModel) {
+        binding.buttonRating.setOnClickListener {
+            findNavController().navigate(
+                DetailsFragmentDirections.actionDetailsFragmentToGiveRatingFragment(
+                    movie
+                )
+            )
+        }
+    }
+
+    private fun share() {
         binding.buttonShare.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
             startActivity(intent)

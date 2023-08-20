@@ -10,4 +10,8 @@
         android:id="@+id/exploreFragment"
         android:icon="@drawable/ic_compass"
         android:title="Explore" />
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/pref_account"
+        android:title="Profile" />
 </menu>

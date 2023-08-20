@@ -7,10 +7,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.moviesappbootcamp.common.MovieType
-import com.example.moviesappbootcamp.common.model.Resource
+import com.example.moviesappbootcamp.common.model.data.Resource
 import com.example.moviesappbootcamp.domain.model.MovieBriefUiModel
 import com.example.moviesappbootcamp.domain.use_case.GetTopRatedMoviesUseCase
-import com.example.moviesappbootcamp.domain.use_case.GetUpcomingMoviesUseCase
 import com.example.moviesappbootcamp.domain.use_case.SearchMoviesUseCase
 import com.example.moviesappbootcamp.presentation.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel

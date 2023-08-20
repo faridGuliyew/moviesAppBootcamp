@@ -6,8 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviesappbootcamp.base.diffUtil.DiffCallbackBase
-import com.example.moviesappbootcamp.common.ChipFilter
-import com.example.moviesappbootcamp.databinding.FragmentFilterBinding
+import com.example.moviesappbootcamp.common.model.other.ChipFilter
 import com.example.moviesappbootcamp.databinding.ItemFilterBinding
 
 class FilterChipAdapter : RecyclerView.Adapter<FilterChipAdapter.FilterChipViewHolder>() {

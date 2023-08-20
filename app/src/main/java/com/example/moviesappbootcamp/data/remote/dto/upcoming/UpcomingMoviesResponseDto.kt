@@ -9,7 +9,7 @@ data class UpcomingMoviesResponseDto(
     @SerializedName("page")
     val page: Int,
     @SerializedName("results")
-    val resultDtos: List<ResultDto>,
+    val upcomingResultDtos: List<UpcomingResultDto>,
     @SerializedName("total_pages")
     val totalPages: Int,
     @SerializedName("total_results")

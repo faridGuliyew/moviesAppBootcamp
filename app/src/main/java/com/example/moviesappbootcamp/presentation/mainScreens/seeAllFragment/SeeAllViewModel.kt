@@ -3,7 +3,7 @@ package com.example.moviesappbootcamp.presentation.mainScreens.seeAllFragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.moviesappbootcamp.common.MovieType
-import com.example.moviesappbootcamp.common.model.Resource
+import com.example.moviesappbootcamp.common.model.data.Resource
 import com.example.moviesappbootcamp.domain.model.MovieModelWithType
 import com.example.moviesappbootcamp.domain.use_case.GetTopRatedMoviesUseCase
 import com.example.moviesappbootcamp.domain.use_case.GetUpcomingMoviesUseCase

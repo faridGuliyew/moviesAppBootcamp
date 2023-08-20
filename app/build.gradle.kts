@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    //id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs")
     id("kotlin-android")
@@ -46,7 +46,16 @@ android {
     }
 }
 
+configurations {
+    implementation {
+        exclude(group = "org.jetbrains", module = "annotations")
+    }
+}
+
+
+
 dependencies {
+
 
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -57,8 +66,8 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     //Navigation
-    implementation ("androidx.navigation:navigation-fragment-ktx:2.6.0")
-    implementation ("androidx.navigation:navigation-ui-ktx:2.6.0")
+    implementation ("androidx.navigation:navigation-fragment-ktx:2.7.0")
+    implementation ("androidx.navigation:navigation-ui-ktx:2.7.0")
 
     //ViewModel
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
@@ -104,6 +113,15 @@ dependencies {
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     //Paging 3.0
-    implementation("androidx.paging:paging-runtime:3.1.1")
+    implementation("androidx.paging:paging-runtime:3.2.0")
     implementation(kotlin("reflect"))
+
+    //Phone numbers library
+    implementation("com.github.gbksoft:GBKCountryCodePicker:v1.0.0")
+
+    //Ratings and reviews
+    implementation ("com.github.Inconnu08:android-ratingreviews:1.2.0")
+
+    //youtube player
+    implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
 }

@@ -6,6 +6,7 @@ import com.example.moviesappbootcamp.data.remote.dto.reviews.ReviewsResponseDto
 import com.example.moviesappbootcamp.data.remote.dto.single.SingleMovieResponseDto
 import com.example.moviesappbootcamp.data.remote.dto.top_rated.TopRatedResponseDto
 import com.example.moviesappbootcamp.data.remote.dto.upcoming.UpcomingMoviesResponseDto
+import com.example.moviesappbootcamp.data.remote.dto.videos.VideosResponseDto
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -30,6 +31,9 @@ interface MovieApi {
 
     @GET("movie/{id}")
     suspend fun getSingleMovie(@Path("id") id : Int, @Query("api_key") apiKey: String = API_KEY) : Response<SingleMovieResponseDto>
+
+    @GET("movie/{id}/videos")
+    suspend fun getMovieVideos(@Path("id") id : Int, @Query("api_key") apiKey: String = API_KEY) : Response<VideosResponseDto>
 
     @GET("movie/{id}/similar")
     suspend fun getRecommendedMovies(@Path("id") id : Int, @Query("api_key") apiKey : String = API_KEY) : Response<TopRatedResponseDto>

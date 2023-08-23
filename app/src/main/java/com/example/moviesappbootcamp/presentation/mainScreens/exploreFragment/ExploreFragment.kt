@@ -3,6 +3,7 @@ package com.example.moviesappbootcamp.presentation.mainScreens.exploreFragment
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import com.example.moviesappbootcamp.base.BaseFragment
 import com.example.moviesappbootcamp.databinding.FragmentExploreBinding
@@ -33,6 +34,7 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(FragmentExploreBind
     private var savedQuery = ""
 
     override fun onViewCreatedLight() {
+        savedQuery = binding.editTextText.text.toString().trim()
         observe()
         setRv()
         setSearch()
@@ -99,11 +101,23 @@ class ExploreFragment : BaseFragment<FragmentExploreBinding>(FragmentExploreBind
         val recommendedRv = binding.recommendedRv
         recommendedRv.adapter = recommendedAdapter
 
+        val navigate = fun(id : Int){
+            findNavController().navigate(ExploreFragmentDirections.actionExploreFragmentToDetailsFragment(id))
+        }
+
+        recommendedAdapter.setOnClickEvent { id->
+            navigate(id)
+        }
+
         val searchRv = binding.searchRv
 
         val notFoundImageView = binding.imageViewNotFound
 
         searchRv.adapter = pagingAdapter
+
+        pagingAdapter.setOnClickEvent { id->
+            navigate(id)
+        }
 
         pagingAdapter.addLoadStateListener { loadState ->
             if (loadState.append.endOfPaginationReached) {

@@ -66,6 +66,9 @@ class SeeAllFragment : BaseFragment<FragmentSeeAllBinding>(FragmentSeeAllBinding
     private fun setRv(){
         val rv = binding.rvResult
         rv.adapter = seeAllAdapter
+        seeAllAdapter.setOnClickEvent { id->
+            findNavController().navigate(SeeAllFragmentDirections.actionSeeAllFragmentToDetailsFragment(id))
+        }
     }
 
 }

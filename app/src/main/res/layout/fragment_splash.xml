@@ -19,7 +19,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/animation_lkx0wm94" />
+        app:lottie_rawRes="@raw/animation_loading" />
 
     <ImageView
         android:id="@+id/imageView"

@@ -35,4 +35,10 @@ class FirebaseRepositoryImpl @Inject constructor (
             }
         }
     }
+
+    override suspend fun logout() = flow {
+        emit(Resource.Loading)
+        auth.signOut()
+        emit(Resource.Success("Logged out successfully"))
+    }
 }

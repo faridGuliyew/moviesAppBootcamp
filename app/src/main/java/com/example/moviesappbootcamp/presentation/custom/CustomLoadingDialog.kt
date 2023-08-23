@@ -11,16 +11,19 @@ import com.example.moviesappbootcamp.R
 import com.example.moviesappbootcamp.databinding.CustomLoadingDialogBinding
 
 class CustomLoadingDialog (context : Context, layoutInflater: LayoutInflater, loadingText : String, cancellable : Boolean = true) : Dialog(context) {
+
+    var binding : CustomLoadingDialogBinding
     init {
+        binding = CustomLoadingDialogBinding.inflate(layoutInflater)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        setContentView(CustomLoadingDialogBinding.inflate(layoutInflater).root)
+        setContentView(binding.root)
         window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        findViewById<TextView>(R.id.textViewLoading).text = loadingText
+        binding.textViewLoading.text = loadingText
         setCancelable(cancellable)
     }
 
     fun setDialogText(newText : String){
-        findViewById<TextView>(R.id.textViewLoading).text = newText
+        binding.textViewLoading.text = newText
         show()
     }
 }

@@ -82,6 +82,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(FragmentHomeBinding::infl
 
 
 
+    //todo
     private fun setMotionAnimation() {
         with(binding.topMoviesViewPager){
             val params = layoutParams

@@ -51,6 +51,9 @@
         <action
             android:id="@+id/action_detailsFragment_to_giveRatingFragment"
             app:destination="@id/giveRatingFragment" />
+        <action
+            android:id="@+id/action_detailsFragment_self"
+            app:destination="@id/detailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -66,6 +69,9 @@
         <action
             android:id="@+id/action_profileFragment_to_editProfileFragment"
             app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_logOutFragment"
+            app:destination="@id/logOutFragment" />
     </fragment>
     <fragment
         android:id="@+id/paymentFragment"
@@ -96,4 +102,9 @@
             android:name="movie"
             app:argType="com.example.moviesappbootcamp.domain.model.MovieDetailedUiModel" />
     </dialog>
+    <dialog
+        android:id="@+id/logOutFragment"
+        android:name="com.example.moviesappbootcamp.presentation.mainScreens.profileFragment.logOutFragment.LogOutFragment"
+        android:label="fragment_log_out"
+        tools:layout="@layout/fragment_log_out" />
 </navigation>

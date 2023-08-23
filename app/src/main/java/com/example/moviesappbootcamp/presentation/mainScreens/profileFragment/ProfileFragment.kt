@@ -11,13 +11,18 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.moviesappbootcamp.R
 import com.example.moviesappbootcamp.base.BaseFragment
 import com.example.moviesappbootcamp.common.model.other.PreferencesModel
 import com.example.moviesappbootcamp.databinding.FragmentProfileBinding
+import com.example.moviesappbootcamp.presentation.UiState
 import com.example.moviesappbootcamp.presentation.adapter.rv.PreferencesRvAdapter
+import com.example.moviesappbootcamp.presentation.custom.CustomLoadingDialog
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate) {
 
     private val preferencesAdapter = PreferencesRvAdapter()
@@ -27,6 +32,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         setRv()
         shineAnimation()
         goToPayment()
+        logout()
     }
 
     private fun setRv(){
@@ -36,6 +42,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         }
         setPreferences()
     }
+
 
     private fun shineAnimation() {
         val anim = AnimationUtils.loadAnimation(requireContext(), R.anim.left_right)
@@ -64,4 +71,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
         preferencesAdapter.differ.submitList(preferences)
     }
 
+    private fun logout(){
+        binding.buttonExit.setOnClickListener {
+            findNavController().navigate(ProfileFragmentDirections.actionProfileFragmentToLogOutFragment())
+        }
+    }
 }

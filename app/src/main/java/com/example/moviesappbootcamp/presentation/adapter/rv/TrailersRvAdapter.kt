@@ -30,9 +30,9 @@ class TrailersRvAdapter (private val lifecycle: Lifecycle) : RecyclerView.Adapte
                 }
                 val iFrame = IFramePlayerOptions.Builder().controls(1)
                     .fullscreen(1)
-                    .build();
+                    .build()
 
-                youTubePlayerView.initialize(listener,iFrame)
+                try { youTubePlayerView.initialize(listener,iFrame) } catch (e:Exception){}
                 buttonYt.setOnClickListener { onYoutubeButtonClick(trailerModel.key) }
             }
         }

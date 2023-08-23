@@ -8,4 +8,6 @@ interface FirebaseRepository {
     suspend fun mailSignUp(mail : String, password : String) : Flow<Resource<String>>
 
     suspend fun mailLogin(mail: String, password: String) : Flow<Resource<String>>
+
+    suspend fun logout() : Flow<Resource<String>>
 }

@@ -103,7 +103,6 @@ class DetailsFragment : BaseFragment<FragmentDetailsBinding>(FragmentDetailsBind
                     justSwitched = 1
                 }
                 justSwitched++
-
             }
         }
     }

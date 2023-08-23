@@ -160,4 +160,14 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonExit"
+        style="@style/Widget.Material3.Button.IconButton"
+        app:icon="@drawable/ic_exit"
+        app:iconTint="#D50000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/guideline30"
+        app:layout_constraintTop_toTopOf="@+id/guideline28" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
